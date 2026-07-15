@@ -1,0 +1,7 @@
+{
+  "id": "js",
+  "mech": {
+    "build": ["npm", "run", "build"],
+    "test": ["npx", "vitest", "run"]
+  }
+}
