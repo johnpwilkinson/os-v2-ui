@@ -1,0 +1,63 @@
+# os-janitor v1 — post-merge state re-sync (spec 2026-07-13-gh-watcher-design.md).
+# Preset-carried canonical copy lives in the agents repo at chamber/presets/;
+# the marker comment above is the staleness check preflight looks for.
+name: os-janitor
+on:
+  push:
+    branches: [main]
+concurrency:
+  group: os-janitor
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  integration-sync:
+    if: github.repository_owner == 'johnpwilkinson'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: merge main into dev-engine/integration
+        run: |
+          git config user.name os-janitor
+          git config user.email janitor@local
+          if git ls-remote --exit-code origin refs/heads/dev-engine/integration >/dev/null 2>&1; then
+            git checkout -B dev-engine/integration origin/dev-engine/integration
+            git merge origin/main --no-edit
+          else
+            git checkout -B dev-engine/integration origin/main
+          fi
+          git push origin dev-engine/integration
+  branch-cleanup:
+    if: github.repository_owner == 'johnpwilkinson'
+    runs-on: ubuntu-latest
+    needs: integration-sync
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: delete engine-era refs contained in main
+        run: |
+          git config user.name os-janitor
+          git config user.email janitor@local
+          for ref in $(git for-each-ref --format='%(refname:short)' 'refs/remotes/origin/dev-engine/**' 'refs/remotes/origin/lane/**' | sed 's#^origin/##'); do
+            case "$ref" in dev-engine/integration) continue;; esac
+            case "$ref" in
+              dev-engine/ledger/*)
+                feat="${ref#dev-engine/ledger/}"
+                work="dev-engine/$feat" ;;
+              *)
+                work="$ref" ;;
+            esac
+            if git ls-remote --exit-code origin "refs/heads/$work" >/dev/null 2>&1; then
+              if git merge-base --is-ancestor "origin/$work" origin/main; then
+                echo "deleting merged ref $ref"
+                git push origin --delete "$ref"
+              fi
+            else
+              # work branch already gone (ledger orphan) — safe to delete
+              echo "deleting orphan ref $ref"
+              git push origin --delete "$ref"
+            fi
+          done
