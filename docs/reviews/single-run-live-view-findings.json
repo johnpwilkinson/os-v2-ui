@@ -1,0 +1,89 @@
+{
+  "feature": "single-run-live-view",
+  "findings": [
+    {
+      "severity": "med",
+      "file": "src/server/journal-tail.ts",
+      "line": 57,
+      "issue": "resumeAfter = Number(lastEventId) has no finite-number guard; a corrupted/non-numeric lastEventId on reconnect yields NaN, and index > NaN is always false, so every replay line is silently dropped with no error surfaced.",
+      "fix_hint": "Guard with Number.isFinite(parsed) ? parsed : -1, and add a journal-tail.test.ts case for a non-numeric lastEventId asserting full replay from 0."
+    },
+    {
+      "severity": "med",
+      "file": "src/server/api.ts",
+      "line": 16,
+      "issue": "appRouter's runs.get spreads { ...snapshot, repoUrl } but no test exists for src/server/api.ts anywhere in the diff, including the ok:false + repoUrl shape.",
+      "fix_hint": "Add api.test.ts (or extend runs.test.ts) calling appRouter.createCaller({}).runs.get for both a found and missing run."
+    },
+    {
+      "severity": "med",
+      "file": "src/app/page.tsx",
+      "line": 1,
+      "issue": "Root page's newest-run resolution and zero-runs empty state (requirements 1.3/1.4) have no test coverage; no src/app/page.test.tsx exists in the diff.",
+      "fix_hint": "Add a page.test.tsx that mocks listRuns() to return runs and asserts RunView is rendered with the lexicographically-first runId, plus a zero-runs case asserting the empty state renders without crashing."
+    },
+    {
+      "severity": "med",
+      "file": "src/components/run-view/run-view.test.tsx",
+      "line": 1,
+      "issue": "The live (non-finished) subscription path's index-dedup (req 4.5), GateBanner RUNNING wiring, and StageTree/JournalFeed live line-append are still never exercised by any test, even though a new test was added for the finished-adoption/refetch behavior.",
+      "fix_hint": "Add a test that drives onData with a tracked line event plus a duplicate-index event and asserts the line appears once in the feed and GateBanner shows RUNNING."
+    },
+    {
+      "severity": "med",
+      "file": "src/components/run-view/gate-banner.test.tsx",
+      "line": 21,
+      "issue": "HALTED test only sets halt_kind with no gate/error, so detailText = summary.gate ?? summary.error ?? \"\" is always \"\" and the branch that actually renders halt detail text is untested.",
+      "fix_hint": "Add cases with { halt_kind, gate } and { halt_kind, error } asserting the detail text renders."
+    },
+    {
+      "severity": "med",
+      "file": "src/components/run-view/journal-feed.test.tsx",
+      "line": 1,
+      "issue": "leg-start, battery, and evt row-rendering branches in JournalRow are untested; only leg-complete, unknown, and log+source-badge are covered.",
+      "fix_hint": "Add render assertions for a leg-start row, a battery row (start and completion with exitCode), and an evt row showing evtType + payload summary."
+    },
+    {
+      "severity": "med",
+      "file": "src/server/journal-tail.test.ts",
+      "line": 216,
+      "issue": "Design.md explicitly commits to buffering partial trailing lines until their newline arrives, but no test ever appends a chunk without a trailing newline to prove the incomplete line isn't emitted early.",
+      "fix_hint": "Append a chunk with no trailing newline, assert no new tracked event fires, then append the closing newline and assert exactly one event fires."
+    },
+    {
+      "severity": "med",
+      "file": "src/components/run-view/journal-feed.tsx",
+      "line": 15,
+      "issue": "STATUS_DOT_CLASSES (the emerald/red/amber leg-status color map) is defined identically and independently in journal-feed.tsx and stage-tree.tsx.",
+      "fix_hint": "Extract to a shared src/components/run-view/status-dot.ts and import from both files."
+    },
+    {
+      "severity": "med",
+      "file": "src/server/journal-tail.ts",
+      "line": 42,
+      "issue": "fileExists and statMtimeMs in journal-tail.ts duplicate fileExists and mtimeMsOf already defined in runs.ts, which journal-tail.ts already imports from.",
+      "fix_hint": "Move both helpers into a shared src/server/fs-helpers.ts and import from both runs.ts and journal-tail.ts."
+    },
+    {
+      "severity": "med",
+      "file": "src/components/run-view/gate-banner.tsx",
+      "line": 9,
+      "issue": "GateBannerProps.feature is declared and required at every call site but never read inside the component; the MERGED feature name is derived independently from summary.gate.",
+      "fix_hint": "Remove the feature prop from GateBannerProps and drop feature={null} from the run-view.tsx call site."
+    },
+    {
+      "severity": "low",
+      "file": "src/components/run-view/now-line.tsx",
+      "line": 17,
+      "issue": "run-view.tsx and now-line.tsx each run an independent 30s setInterval to track 'now', duplicating the same clock tick for no functional reason.",
+      "fix_hint": "Have RunView pass its own now state down as a prop instead of NowLine maintaining a second ticker."
+    },
+    {
+      "severity": "low",
+      "file": "src/components/run-view/journal-feed.tsx",
+      "line": 93,
+      "issue": "LegRow never renders line.error for a failed leg-complete or battery row in the JournalFeed, unlike StageTree which shows it under the failed leg.",
+      "fix_hint": "Render the error string (when present) as a muted red inline detail in LegRow for failed status, matching StageTree's treatment."
+    }
+  ]
+}
