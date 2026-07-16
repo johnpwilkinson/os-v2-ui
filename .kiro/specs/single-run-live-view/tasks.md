@@ -12,7 +12,7 @@
   _Boundary: src/lib/journal/stages.ts, src/lib/journal/derive.ts_
   _Depends: 1.1_
 
-- [ ]* 1.3 (P) Author `src/lib/journal/parse.test.ts` using the fixtures module: classification of each known kind (leg-start [req:9.1], leg-complete ok with tokens/ms [req:9.1], failed leg carrying `error` [req:9.1], battery start and completion with `exitCode` [req:9.1], plain log [req:9.1], EVT gate line decoding to `evt` with `evtType === "gate"` [req:9.1]), and the defensive paths: non-JSON garbage classifies `unknown` without throwing [req:9.2], unrecognized-shape JSON classifies `unknown` [req:9.2], an `EVT notjson{` line classifies plain `log` without throwing [req:9.2]; assert `parseJournal` on a multi-line blob with a trailing newline returns exactly one entry per non-empty line.
+- [x]* 1.3 (P) Author `src/lib/journal/parse.test.ts` using the fixtures module: classification of each known kind (leg-start [req:9.1], leg-complete ok with tokens/ms [req:9.1], failed leg carrying `error` [req:9.1], battery start and completion with `exitCode` [req:9.1], plain log [req:9.1], EVT gate line decoding to `evt` with `evtType === "gate"` [req:9.1]), and the defensive paths: non-JSON garbage classifies `unknown` without throwing [req:9.2], unrecognized-shape JSON classifies `unknown` [req:9.2], an `EVT notjson{` line classifies plain `log` without throwing [req:9.2]; assert `parseJournal` on a multi-line blob with a trailing newline returns exactly one entry per non-empty line.
   _Requirements: 9.1, 9.2_
   _Boundary: src/lib/journal/parse.test.ts_
   _Depends: 1.1_
