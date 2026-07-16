@@ -49,6 +49,7 @@ function RunViewShell({ runId }: RunViewProps) {
   const [now, setNow] = useState<number | null>(null);
   const seenIndices = useRef<Set<number>>(new Set());
   const seededRunId = useRef<string | null>(null);
+  const refetchedOnFinish = useRef(false);
 
   useEffect(() => {
     if (!snapshot || !snapshot.ok || seededRunId.current === runId) return;
@@ -58,7 +59,17 @@ function RunViewShell({ runId }: RunViewProps) {
     );
     setLines(snapshot.lines);
     setStatus(null);
+    refetchedOnFinish.current = false;
   }, [snapshot, runId]);
+
+  useEffect(() => {
+    if (status?.finished && !refetchedOnFinish.current) {
+      refetchedOnFinish.current = true;
+      void snapshotQuery.refetch();
+    } else if (!status?.finished) {
+      refetchedOnFinish.current = false;
+    }
+  }, [status?.finished, snapshotQuery]);
 
   useEffect(() => {
     const tick = () => setNow(Date.now());
@@ -67,7 +78,7 @@ function RunViewShell({ runId }: RunViewProps) {
     return () => clearInterval(intervalId);
   }, []);
 
-  const finished = snapshot?.ok ? snapshot.finished : false;
+  const finished = status?.finished ?? (snapshot?.ok ? snapshot.finished : false);
   const subscriptionInput =
     snapshot?.ok && !snapshot.finished
       ? {

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { skipToken } from "@tanstack/react-query";
 
 const { listQuery, getQuery, subscriptionSpy } = vi.hoisted(() => ({
@@ -17,7 +17,7 @@ vi.mock("@/components/run-view/trpc", () => ({
       list: { useQuery: () => listQuery() },
       get: { useQuery: () => getQuery() },
       journalTail: {
-        useSubscription: (input: unknown) => subscriptionSpy(input),
+        useSubscription: (input: unknown, options: unknown) => subscriptionSpy(input, options),
       },
     },
   },
@@ -65,6 +65,45 @@ describe("RunView", () => {
     expect(screen.getByText("7")).toBeInTheDocument();
     expect(screen.getByText("output tokens")).toBeInTheDocument();
     expect(screen.getByText("llm hops")).toBeInTheDocument();
-    expect(subscriptionSpy).toHaveBeenCalledWith(skipToken);
+    expect(subscriptionSpy.mock.calls.at(-1)?.[0]).toBe(skipToken);
+  });
+
+  it("adopts the finished state and refetches the snapshot when the live tail status reports finished [req:4.3]", () => {
+    const refetch = vi.fn();
+    listQuery.mockReturnValue({
+      data: [{ runId: "run-1", finished: false, mtimeMs: Date.now() }],
+    });
+    getQuery.mockReturnValue({
+      data: {
+        ok: true,
+        lines: [],
+        lineCount: 0,
+        finished: false,
+        summary: null,
+        engineState: { phase: "running" },
+        repoUrl: null,
+      },
+      refetch,
+    });
+
+    render(<RunView runId="run-1" />);
+
+    const [, options] = subscriptionSpy.mock.calls.at(-1) as [
+      unknown,
+      { onData: (event: unknown) => void },
+    ];
+
+    act(() => {
+      options.onData({ type: "status", mtimeMs: Date.now(), finished: true, stallAfterMs: 600_000 });
+    });
+
+    expect(refetch).toHaveBeenCalledTimes(1);
+
+    // A repeated "finished" status event must not trigger a second refetch.
+    act(() => {
+      options.onData({ type: "status", mtimeMs: Date.now(), finished: true, stallAfterMs: 600_000 });
+    });
+
+    expect(refetch).toHaveBeenCalledTimes(1);
   });
 });
