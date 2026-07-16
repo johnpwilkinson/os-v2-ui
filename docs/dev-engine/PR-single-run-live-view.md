@@ -41,44 +41,30 @@ f92a856 feat(single-run-live-view): Implement the props-only status components  
 
 | slug | status |
 |------|--------|
-| gatebanner-s-feature-prop-is-required-bu | residual |
-| two-independent-30s-now-tickers-do-the-s | residual |
-| failed-leg-s-error-message-text-is-never | residual |
-| root-home-page-s-newest-run-empty-state | residual |
+| gatebanner-s-feature-prop-is-required-bu | fixed(e5bd2ae) |
+| two-independent-30s-now-tickers-do-the-s | fixed(e5bd2ae) |
+| failed-leg-s-error-message-text-is-never | fixed(e5bd2ae) |
+| root-home-page-s-newest-run-empty-state | fixed(e5bd2ae) |
 | live-run-never-adopts-finished-state-fro | fixed(b08c5ce) |
 | finished-run-nowline-fabricates-now-as-l | fixed(23122da) |
 | live-run-subscription-path-has-zero-test | skipped(verdict/executor) |
 | resolverepourl-has-no-test-coverage-anyw | fixed(41e7f9d) |
-| status-dot-classes-duplicated-verbatim-a | deferred |
-| fs-helper-functions-duplicated-between-r | deferred |
-| gatebanner-s-feature-prop-is-declared-bu | deferred |
-| approuter-s-runs-get-merge-logic-is-unte | deferred |
-| malformed-lasteventid-silently-drops-all | deferred |
-| partial-trailing-line-buffering-is-docum | deferred |
-| halted-banner-s-gate-error-detail-text-b | deferred |
-| evt-battery-leg-start-row-branches-in-jo | deferred |
+| status-dot-classes-duplicated-verbatim-a | fixed(e5bd2ae) |
+| fs-helper-functions-duplicated-between-r | fixed(e5bd2ae) |
+| gatebanner-s-feature-prop-is-declared-bu | fixed(e5bd2ae) |
+| approuter-s-runs-get-merge-logic-is-unte | fixed(e5bd2ae) |
+| malformed-lasteventid-silently-drops-all | fixed(e5bd2ae) |
+| partial-trailing-line-buffering-is-docum | fixed(e5bd2ae) |
+| halted-banner-s-gate-error-detail-text-b | fixed(e5bd2ae) |
+| evt-battery-leg-start-row-branches-in-jo | fixed(e5bd2ae) |
 
 ### Deferred pick-list
 
-- status-dot-classes-duplicated-verbatim-a
-- fs-helper-functions-duplicated-between-r
-- gatebanner-s-feature-prop-is-declared-bu
-- approuter-s-runs-get-merge-logic-is-unte
-- malformed-lasteventid-silently-drops-all
-- partial-trailing-line-buffering-is-docum
-- halted-banner-s-gate-error-detail-text-b
-- evt-battery-leg-start-row-branches-in-jo
+All previously-deferred items were fixed in e5bd2ae; none remain outstanding.
 
 ## Residual findings
 
-- [MED] STATUS_DOT_CLASSES duplicated verbatim across two files (src/components/run-view/journal-feed.tsx:15)
-- [MED] fs helper functions duplicated between runs.ts and journal-tail.ts (src/server/journal-tail.ts:50)
-- [MED] GateBanner's `feature` prop is declared but never read (src/components/run-view/gate-banner.tsx:9)
-- [MED] appRouter's runs.get merge logic is untested (src/server/api.ts:16)
-- [MED] Malformed lastEventId silently drops all replay lines, untested (src/server/journal-tail.ts:78)
-- [MED] Partial trailing-line buffering is documented but never tested (src/server/journal-tail.test.ts:216)
-- [MED] HALTED banner's gate/error detail text branch is untested (src/components/run-view/gate-banner.test.tsx:21)
-- [MED] evt/battery/leg-start row branches in JournalFeed are untested (src/components/run-view/journal-feed.test.tsx:1)
+None — all previously-residual LOW findings were addressed in e5bd2ae.
 
 ## Gate receipts
 

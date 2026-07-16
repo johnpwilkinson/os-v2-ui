@@ -261,6 +261,19 @@ describe("tailJournal", () => {
     expect(closeSpy).toHaveBeenCalledTimes(2);
   });
 
+  test("ends immediately for a traversal-shaped runId instead of escaping artifactsRoot [req:9.5]", async () => {
+    const controller = new AbortController();
+
+    const generator = tailJournal("../journal.jsonl", null, controller.signal);
+    try {
+      const result = await generator.next();
+      expect(result.done).toBe(true);
+    } finally {
+      controller.abort();
+      await generator.return(undefined);
+    }
+  });
+
   test("makes no HTTP request to chamber-bridge or any engine endpoint [req:8.3]", async () => {
     await writeJournal(['{"log":"a"}']);
     const fetchSpy = vi.spyOn(globalThis, "fetch");

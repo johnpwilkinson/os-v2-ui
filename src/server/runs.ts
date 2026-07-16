@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { parseJournal } from "@/lib/journal/parse";
 import type { NormalizedSummary, RunJournalLine } from "@/lib/journal/types";
-import { fileExists, mtimeMsOf } from "@/server/fs-helpers";
+import { fileExists, mtimeMsOf, resolveWithinRoot } from "@/server/fs-helpers";
 
 export interface RunListEntry {
   runId: string;
@@ -131,9 +131,9 @@ export async function readEngineState(): Promise<EngineState | null> {
 
 export async function readRunSnapshot(runId: string): Promise<ReadRunSnapshotResult> {
   const root = artifactsRoot();
-  const runDir = path.join(root, runId);
+  const runDir = resolveWithinRoot(root, runId);
 
-  if (!(await isDirectory(runDir))) {
+  if (!runDir || !(await isDirectory(runDir))) {
     return { ok: false };
   }
 
@@ -204,16 +204,19 @@ function scanForGithubUrl(value: unknown): string | null {
 }
 
 export async function resolveRepoUrl(runId: string): Promise<string | null> {
-  const resultPath = path.join(artifactsRoot(), runId, "result.json");
-  try {
-    const raw = await fs.readFile(resultPath, "utf8");
-    const parsed: unknown = JSON.parse(raw);
-    const found = scanForGithubUrl(parsed);
-    if (found) {
-      return found;
+  const runDir = resolveWithinRoot(artifactsRoot(), runId);
+  if (runDir) {
+    const resultPath = path.join(runDir, "result.json");
+    try {
+      const raw = await fs.readFile(resultPath, "utf8");
+      const parsed: unknown = JSON.parse(raw);
+      const found = scanForGithubUrl(parsed);
+      if (found) {
+        return found;
+      }
+    } catch {
+      // fall through to env fallback
     }
-  } catch {
-    // fall through to env fallback
   }
   return process.env.CHAMBER_REPO_URL ?? null;
 }

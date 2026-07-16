@@ -111,6 +111,21 @@ describe("readRunSnapshot", () => {
     await expect(readRunSnapshot("does-not-exist")).resolves.toEqual({ ok: false });
   });
 
+  test("returns { ok: false } for a traversal-shaped runId instead of escaping artifactsRoot [req:9.5]", async () => {
+    const sandbox = await fs.mkdtemp(path.join(os.tmpdir(), "runs-traversal-"));
+    const root = path.join(sandbox, "artifacts");
+    await fs.mkdir(root, { recursive: true });
+    await fs.writeFile(path.join(sandbox, "journal.jsonl"), '{"log":"outside"}\n');
+    process.env.CHAMBER_ARTIFACTS_DIR = root;
+
+    try {
+      await expect(readRunSnapshot("../journal.jsonl")).resolves.toEqual({ ok: false });
+      await expect(readRunSnapshot("../../etc")).resolves.toEqual({ ok: false });
+    } finally {
+      await fs.rm(sandbox, { recursive: true, force: true });
+    }
+  });
+
   test("reports mtimeMs from the top-level journal.jsonl's own mtime [req:7.9]", async () => {
     const runDir = await makeRunDir("run-with-journal-mtime");
     const journalPath = path.join(runDir, "journal.jsonl");
@@ -157,6 +172,23 @@ describe("resolveRepoUrl", () => {
     await makeRunDir("run-nothing");
 
     await expect(resolveRepoUrl("run-nothing")).resolves.toBeNull();
+  });
+
+  test("does not escape artifactsRoot for a traversal-shaped runId [req:9.5]", async () => {
+    const sandbox = await fs.mkdtemp(path.join(os.tmpdir(), "runs-traversal-"));
+    const root = path.join(sandbox, "artifacts");
+    await fs.mkdir(root, { recursive: true });
+    await fs.writeFile(
+      path.join(sandbox, "result.json"),
+      JSON.stringify({ remote: "https://github.com/acme/leaked.git" }),
+    );
+    process.env.CHAMBER_ARTIFACTS_DIR = root;
+
+    try {
+      await expect(resolveRepoUrl("../result.json")).resolves.toBeNull();
+    } finally {
+      await fs.rm(sandbox, { recursive: true, force: true });
+    }
   });
 });
 

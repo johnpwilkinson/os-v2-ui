@@ -5,7 +5,7 @@ import { watch as watchFile, type FSWatcher } from "chokidar";
 import { classifyLine } from "@/lib/journal/parse";
 import type { JournalLine } from "@/lib/journal/types";
 import { artifactsRoot } from "@/server/runs";
-import { fileExists, mtimeMsOf } from "@/server/fs-helpers";
+import { fileExists, mtimeMsOf, resolveWithinRoot } from "@/server/fs-helpers";
 
 const STATUS_INTERVAL_MS = 15_000;
 
@@ -55,7 +55,10 @@ export async function* tailJournal(
 ): AsyncGenerator<
   ReturnType<typeof tracked<JournalTailLineEvent>> | JournalTailStatusEvent
 > {
-  const runDir = path.join(artifactsRoot(), runId);
+  const runDir = resolveWithinRoot(artifactsRoot(), runId);
+  if (!runDir) {
+    return;
+  }
   const journalPath = path.join(runDir, "journal.jsonl");
   const summaryPath = path.join(runDir, "runner-summary.json");
   const stallAfterMs = Number(process.env.STALL_QUIET_MINUTES ?? 10) * 60_000;
