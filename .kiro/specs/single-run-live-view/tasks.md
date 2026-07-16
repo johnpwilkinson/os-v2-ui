@@ -17,7 +17,7 @@
   _Boundary: src/lib/journal/parse.test.ts_
   _Depends: 1.1_
 
-- [ ]* 1.4 (P) Author `src/lib/journal/stages.test.ts` and `src/lib/journal/derive.test.ts`: stages tests cover prefix grouping with first-seen order preserved [req:9.3], known-prefix display titles [req:9.3], an unknown prefix (e.g. label `weird:1`) producing its own group titled `weird` without error [req:9.3], and leg status running/done/failed with `error` carried [req:9.3]; derive tests cover now-line selection when one leg is open [req:9.4], null now-line when all legs complete [req:9.4], and token/hop totals summing only numeric `tokens` completions [req:9.4].
+- [x]* 1.4 (P) Author `src/lib/journal/stages.test.ts` and `src/lib/journal/derive.test.ts`: stages tests cover prefix grouping with first-seen order preserved [req:9.3], known-prefix display titles [req:9.3], an unknown prefix (e.g. label `weird:1`) producing its own group titled `weird` without error [req:9.3], and leg status running/done/failed with `error` carried [req:9.3]; derive tests cover now-line selection when one leg is open [req:9.4], null now-line when all legs complete [req:9.4], and token/hop totals summing only numeric `tokens` completions [req:9.4].
   _Requirements: 9.3, 9.4_
   _Boundary: src/lib/journal/stages.test.ts, src/lib/journal/derive.test.ts_
   _Depends: 1.2_
