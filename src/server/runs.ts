@@ -26,6 +26,7 @@ export type ReadRunSnapshotResult =
       finished: boolean;
       summary?: NormalizedSummary;
       engineState: EngineState | null;
+      mtimeMs: number;
     };
 
 export function artifactsRoot(): string {
@@ -181,6 +182,7 @@ export async function readRunSnapshot(runId: string): Promise<ReadRunSnapshotRes
   }
 
   const engineState = await readEngineState();
+  const mtimeMs = await mtimeMsOf(path.join(runDir, "journal.jsonl"));
 
   return {
     ok: true,
@@ -189,6 +191,7 @@ export async function readRunSnapshot(runId: string): Promise<ReadRunSnapshotRes
     finished,
     summary,
     engineState,
+    mtimeMs,
   };
 }
 

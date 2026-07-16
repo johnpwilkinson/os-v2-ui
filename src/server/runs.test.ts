@@ -102,6 +102,19 @@ describe("readRunSnapshot", () => {
   test("returns { ok: false } without throwing for a missing runId [req:9.5]", async () => {
     await expect(readRunSnapshot("does-not-exist")).resolves.toEqual({ ok: false });
   });
+
+  test("reports mtimeMs from the top-level journal.jsonl's own mtime [req:7.9]", async () => {
+    const runDir = await makeRunDir("run-with-journal-mtime");
+    const journalPath = path.join(runDir, "journal.jsonl");
+    await fs.writeFile(journalPath, '{"log":"top1"}\n');
+    const stats = await fs.stat(journalPath);
+
+    const result = await readRunSnapshot("run-with-journal-mtime");
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.mtimeMs).toBe(stats.mtimeMs);
+  });
 });
 
 describe("normalizeSummary", () => {

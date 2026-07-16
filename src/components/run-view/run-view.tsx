@@ -141,7 +141,7 @@ function RunViewShell({ runId }: RunViewProps) {
       <GateBanner summary={summary} live={live} feature={null} repoUrl={snapshot.repoUrl} />
       <NowLine
         nowLabel={derived.nowLine}
-        mtimeMs={status?.mtimeMs ?? now ?? 0}
+        mtimeMs={status?.mtimeMs ?? snapshot.mtimeMs ?? now ?? 0}
         finished={finished}
         stallAfterMs={status?.stallAfterMs ?? DEFAULT_STALL_AFTER_MS}
       />

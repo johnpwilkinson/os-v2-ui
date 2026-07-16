@@ -68,6 +68,29 @@ describe("RunView", () => {
     expect(subscriptionSpy.mock.calls.at(-1)?.[0]).toBe(skipToken);
   });
 
+  it("derives NowLine's last-activity time from the snapshot's journal mtime, not the browser clock, for a finished run [req:7.9]", () => {
+    const journalMtimeMs = Date.now() - 3 * 24 * 60 * 60 * 1000;
+    listQuery.mockReturnValue({
+      data: [{ runId: "run-1", finished: true, mtimeMs: journalMtimeMs }],
+    });
+    getQuery.mockReturnValue({
+      data: {
+        ok: true,
+        lines: [],
+        lineCount: 0,
+        finished: true,
+        summary: null,
+        engineState: null,
+        repoUrl: null,
+        mtimeMs: journalMtimeMs,
+      },
+    });
+
+    render(<RunView runId="run-1" />);
+
+    expect(screen.getByText(/last activity 3 days ago/)).toBeInTheDocument();
+  });
+
   it("adopts the finished state and refetches the snapshot when the live tail status reports finished [req:4.3]", () => {
     const refetch = vi.fn();
     listQuery.mockReturnValue({
