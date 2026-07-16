@@ -23,3 +23,5 @@ LOW findings are never executed; they are recorded as residual.
 | 913 | two-independent-30s-now-tickers-do-the-s | LOW | fixed(e5bd2ae) |
 | 914 | failed-leg-s-error-message-text-is-never | LOW | fixed(e5bd2ae) |
 | 915 | root-home-page-s-newest-run-empty-state | LOW | fixed(e5bd2ae) |
+| 014 | onclick-attribute-check-never-detects-a | MED | pending |
+| 901 | tohavetextcontent-assertion-is-tautologi | LOW | residual |
