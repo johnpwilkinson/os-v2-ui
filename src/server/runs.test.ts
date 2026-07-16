@@ -1,0 +1,131 @@
+import { promises as fs } from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { listRuns, normalizeSummary, readRunSnapshot } from "./runs";
+
+let tmpRoot: string;
+let previousArtifactsDir: string | undefined;
+
+beforeEach(async () => {
+  tmpRoot = await fs.mkdtemp(path.join(os.tmpdir(), "runs-test-"));
+  previousArtifactsDir = process.env.CHAMBER_ARTIFACTS_DIR;
+  process.env.CHAMBER_ARTIFACTS_DIR = tmpRoot;
+});
+
+afterEach(async () => {
+  if (previousArtifactsDir === undefined) {
+    delete process.env.CHAMBER_ARTIFACTS_DIR;
+  } else {
+    process.env.CHAMBER_ARTIFACTS_DIR = previousArtifactsDir;
+  }
+  await fs.rm(tmpRoot, { recursive: true, force: true });
+});
+
+async function makeRunDir(runId: string): Promise<string> {
+  const runDir = path.join(tmpRoot, runId);
+  await fs.mkdir(runDir, { recursive: true });
+  return runDir;
+}
+
+describe("listRuns", () => {
+  test("orders runs newest-first lexicographically [req:9.5]", async () => {
+    await makeRunDir("run-a");
+    await makeRunDir("run-b");
+
+    const runs = await listRuns();
+
+    expect(runs.map((r) => r.runId)).toEqual(["run-b", "run-a"]);
+  });
+
+  test("excludes .engine-state.json and other dot-entries [req:9.5]", async () => {
+    await fs.writeFile(path.join(tmpRoot, ".engine-state.json"), "{}");
+    await makeRunDir(".hidden-run");
+    await makeRunDir("run-visible");
+
+    const runs = await listRuns();
+
+    expect(runs.map((r) => r.runId)).toEqual(["run-visible"]);
+  });
+
+  test("reports finished true only when runner-summary.json exists [req:9.5]", async () => {
+    const finishedDir = await makeRunDir("run-finished");
+    await fs.writeFile(path.join(finishedDir, "runner-summary.json"), "{}");
+    await makeRunDir("run-unfinished");
+
+    const runs = await listRuns();
+
+    expect(runs).toEqual(
+      expect.arrayContaining([
+        { runId: "run-finished", finished: true },
+        { runId: "run-unfinished", finished: false },
+      ]),
+    );
+  });
+});
+
+describe("readRunSnapshot", () => {
+  test("merges nested turbo-*/journal.jsonl after top-level lines with source tags, counting lineCount from top-level only [req:9.5]", async () => {
+    const runDir = await makeRunDir("run-merge");
+    await fs.writeFile(
+      path.join(runDir, "journal.jsonl"),
+      ['{"log":"top1"}', '{"log":"top2"}'].map((l) => `${l}\n`).join(""),
+    );
+    const turboDir = path.join(runDir, "turbo-x-feat");
+    await fs.mkdir(turboDir, { recursive: true });
+    await fs.writeFile(path.join(turboDir, "journal.jsonl"), '{"log":"nested1"}\n');
+
+    const result = await readRunSnapshot("run-merge");
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.lineCount).toBe(2);
+    expect(result.lines).toHaveLength(3);
+    expect(result.lines[0]).toMatchObject({ kind: "log", text: "top1" });
+    expect(result.lines[0].source).toBeUndefined();
+    expect(result.lines[1]).toMatchObject({ kind: "log", text: "top2" });
+    expect(result.lines[1].source).toBeUndefined();
+    expect(result.lines[2]).toMatchObject({ kind: "log", text: "nested1", source: "turbo-x-feat" });
+  });
+
+  test("returns { ok: false } without throwing for a missing runId [req:9.5]", async () => {
+    await expect(readRunSnapshot("does-not-exist")).resolves.toEqual({ ok: false });
+  });
+});
+
+describe("normalizeSummary", () => {
+  test("maps the driver dispatch_counts shape and the child-era count shape to the same normalized fields [req:9.5]", () => {
+    const driverShape = normalizeSummary({
+      dispatch_counts: { execCount: 5, llmHops: 3, turboRuns: 2 },
+      gate: "gate-1",
+      halt_kind: null,
+      error: "boom",
+      live_output_tokens: 10,
+      live_input_tokens: 20,
+    });
+
+    expect(driverShape).toEqual({
+      execCount: 5,
+      llmHops: 3,
+      turboRuns: 2,
+      gate: "gate-1",
+      halt_kind: null,
+      error: "boom",
+      live_output_tokens: 10,
+      live_input_tokens: 20,
+    });
+
+    const childEraShape = normalizeSummary({ exec: 0, llm_live: 15, llm_replayed: 0 });
+
+    expect(childEraShape).toEqual({
+      execCount: 0,
+      llmHops: 15,
+      turboRuns: null,
+      gate: undefined,
+      halt_kind: undefined,
+      error: undefined,
+      live_output_tokens: undefined,
+      live_input_tokens: undefined,
+    });
+  });
+});
