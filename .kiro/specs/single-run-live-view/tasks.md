@@ -55,7 +55,7 @@
   _Boundary: src/components/run-view/stage-tree.tsx, src/components/run-view/journal-feed.tsx_
   _Depends: 1.2_
 
-- [ ] 4.3 (P) Implement `src/components/run-view/run-picker.tsx`: a client component `RunPicker({ runs, selectedRunId })` receiving `{ runId, finished }[]` newest-first, rendering the existing shadcn `Select` from `src/components/ui/select.tsx` (customized styling: `font-mono text-sm`, zinc surfaces, never default-looking) listing every run with its runId text and, for runs where `finished` is false, an emerald `LIVE` badge (`text-emerald-600 dark:text-emerald-400 text-[10px] uppercase`); on value change call `router.push("/run/" + runId)` via `useRouter` from `next/navigation`; no data fetching inside the component, no edits to `src/components/ui/select.tsx` itself.
+- [x] 4.3 (P) Implement `src/components/run-view/run-picker.tsx`: a client component `RunPicker({ runs, selectedRunId })` receiving `{ runId, finished }[]` newest-first, rendering the existing shadcn `Select` from `src/components/ui/select.tsx` (customized styling: `font-mono text-sm`, zinc surfaces, never default-looking) listing every run with its runId text and, for runs where `finished` is false, an emerald `LIVE` badge (`text-emerald-600 dark:text-emerald-400 text-[10px] uppercase`); on value change call `router.push("/run/" + runId)` via `useRouter` from `next/navigation`; no data fetching inside the component, no edits to `src/components/ui/select.tsx` itself.
   _Requirements: 1.6, 1.7_
   _Boundary: src/components/run-view/run-picker.tsx_
   _Depends: 1.1_
