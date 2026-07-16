@@ -6,7 +6,6 @@ import type { NormalizedSummary } from "@/lib/journal/types";
 interface GateBannerProps {
   summary: NormalizedSummary | null;
   live: boolean;
-  feature: string | null;
   repoUrl: string | null;
 }
 

@@ -1,7 +1,23 @@
 import type { ReactNode } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import { skipToken } from "@tanstack/react-query";
+
+beforeEach(() => {
+  Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
+    configurable: true,
+    value: 600,
+  });
+  Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
+    configurable: true,
+    value: 600,
+  });
+  window.HTMLElement.prototype.scrollTo = vi.fn();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 const { listQuery, getQuery, subscriptionSpy } = vi.hoisted(() => ({
   listQuery: vi.fn(),
@@ -128,5 +144,49 @@ describe("RunView", () => {
     });
 
     expect(refetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("appends a live tracked line once and dedupes a repeated index, while GateBanner shows RUNNING [req:4.5]", () => {
+    listQuery.mockReturnValue({
+      data: [{ runId: "run-1", finished: false, mtimeMs: Date.now() }],
+    });
+    getQuery.mockReturnValue({
+      data: {
+        ok: true,
+        lines: [],
+        lineCount: 0,
+        finished: false,
+        summary: null,
+        engineState: { phase: "running" },
+        repoUrl: null,
+      },
+    });
+
+    render(<RunView runId="run-1" />);
+
+    expect(screen.getByText("RUNNING")).toBeInTheDocument();
+
+    const [, options] = subscriptionSpy.mock.calls.at(-1) as [
+      unknown,
+      { onData: (event: unknown) => void },
+    ];
+
+    const lineEvent = {
+      id: "0",
+      data: {
+        type: "line",
+        index: 0,
+        line: { kind: "log", text: "hello world", raw: '{"log":"hello world"}' },
+      },
+    };
+
+    act(() => {
+      options.onData(lineEvent);
+    });
+    act(() => {
+      options.onData(lineEvent);
+    });
+
+    expect(screen.getAllByText("hello world")).toHaveLength(1);
   });
 });

@@ -59,4 +59,60 @@ describe("JournalFeed", () => {
     expect(screen.getByText("turbo-x-feat")).toBeInTheDocument();
     expect(screen.getByText("nested-log")).toBeInTheDocument();
   });
+
+  it("renders a leg-start row with the running status dot [req:9.9]", () => {
+    const lines: JournalLine[] = [
+      { kind: "leg-start", label: "impl:web", legKind: "exec", raw: '{"label":"impl:web","phase":"start"}' },
+    ];
+
+    const { container } = render(<JournalFeed lines={lines} />);
+
+    expect(screen.getByText("impl:web")).toBeInTheDocument();
+    expect(container.querySelector('[class*="animate-pulse"]')).not.toBeNull();
+  });
+
+  it("renders a battery start row with the running status dot and no exit code [req:9.9]", () => {
+    const lines: JournalLine[] = [
+      { kind: "battery", label: "battery:smoke", start: true, raw: '{"kind":"battery","label":"battery:smoke","start":true}' },
+    ];
+
+    const { container } = render(<JournalFeed lines={lines} />);
+
+    expect(screen.getByText("battery:smoke")).toBeInTheDocument();
+    expect(container.querySelector('[class*="animate-pulse"]')).not.toBeNull();
+  });
+
+  it("renders a completed battery row with its exit code and duration [req:9.9]", () => {
+    const lines: JournalLine[] = [
+      {
+        kind: "battery",
+        label: "battery:smoke",
+        ok: true,
+        exitCode: 0,
+        ms: 250,
+        raw: '{"kind":"battery","label":"battery:smoke","ok":true,"exitCode":0,"ms":250}',
+      },
+    ];
+
+    render(<JournalFeed lines={lines} />);
+
+    expect(screen.getByText("battery:smoke")).toBeInTheDocument();
+    expect(screen.getByText("250 ms exit 0")).toBeInTheDocument();
+  });
+
+  it("renders an evt row with the evtType badge and a key=value payload summary [req:9.9]", () => {
+    const lines: JournalLine[] = [
+      {
+        kind: "evt",
+        evtType: "gate",
+        payload: { type: "gate", v: 1, name: "footer-locale-badge" },
+        raw: '{"log":"EVT {\\"type\\":\\"gate\\",\\"v\\":1,\\"name\\":\\"footer-locale-badge\\"}"}',
+      },
+    ];
+
+    render(<JournalFeed lines={lines} />);
+
+    expect(screen.getByText("gate")).toBeInTheDocument();
+    expect(screen.getByText("name=footer-locale-badge")).toBeInTheDocument();
+  });
 });

@@ -5,6 +5,7 @@ import { watch as watchFile, type FSWatcher } from "chokidar";
 import { classifyLine } from "@/lib/journal/parse";
 import type { JournalLine } from "@/lib/journal/types";
 import { artifactsRoot } from "@/server/runs";
+import { fileExists, mtimeMsOf } from "@/server/fs-helpers";
 
 const STATUS_INTERVAL_MS = 15_000;
 
@@ -47,23 +48,6 @@ function createSignalQueue() {
   };
 }
 
-async function statMtimeMs(target: string): Promise<number> {
-  try {
-    return (await fs.stat(target)).mtimeMs;
-  } catch {
-    return 0;
-  }
-}
-
-async function fileExists(target: string): Promise<boolean> {
-  try {
-    await fs.stat(target);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 export async function* tailJournal(
   runId: string,
   lastEventId: string | null | undefined,
@@ -75,7 +59,8 @@ export async function* tailJournal(
   const journalPath = path.join(runDir, "journal.jsonl");
   const summaryPath = path.join(runDir, "runner-summary.json");
   const stallAfterMs = Number(process.env.STALL_QUIET_MINUTES ?? 10) * 60_000;
-  const resumeAfter = lastEventId != null ? Number(lastEventId) : -1;
+  const parsedResumeAfter = lastEventId != null ? Number(lastEventId) : -1;
+  const resumeAfter = Number.isFinite(parsedResumeAfter) ? parsedResumeAfter : -1;
 
   let offset = 0;
   let pendingBytes = Buffer.alloc(0);
@@ -116,7 +101,7 @@ export async function* tailJournal(
 
   async function currentStatus(): Promise<JournalTailStatusEvent> {
     const [mtimeMs, finished] = await Promise.all([
-      statMtimeMs(journalPath),
+      mtimeMsOf(journalPath),
       fileExists(summaryPath),
     ]);
     return { type: "status", mtimeMs, finished, stallAfterMs };

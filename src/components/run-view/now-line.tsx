@@ -1,28 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
 
 interface NowLineProps {
   nowLabel: string | null;
   mtimeMs: number;
+  now: number;
   finished: boolean;
   stallAfterMs: number;
 }
 
-export function NowLine({ nowLabel, mtimeMs, finished, stallAfterMs }: NowLineProps) {
-  const [now, setNow] = useState(mtimeMs);
-
-  useEffect(() => {
-    const tick = () => setNow(Date.now());
-    const intervalId = setInterval(tick, 30_000);
-    const timeoutId = setTimeout(tick, 0);
-    return () => {
-      clearInterval(intervalId);
-      clearTimeout(timeoutId);
-    };
-  }, []);
-
+export function NowLine({ nowLabel, mtimeMs, now, finished, stallAfterMs }: NowLineProps) {
   const stalled = !finished && now - mtimeMs > stallAfterMs;
 
   return (

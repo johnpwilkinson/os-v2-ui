@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { parseJournal } from "@/lib/journal/parse";
 import type { NormalizedSummary, RunJournalLine } from "@/lib/journal/types";
+import { fileExists, mtimeMsOf } from "@/server/fs-helpers";
 
 export interface RunListEntry {
   runId: string;
@@ -43,24 +44,6 @@ async function isDirectory(target: string): Promise<boolean> {
     return stats.isDirectory();
   } catch {
     return false;
-  }
-}
-
-async function fileExists(target: string): Promise<boolean> {
-  try {
-    await fs.stat(target);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function mtimeMsOf(target: string): Promise<number> {
-  try {
-    const stats = await fs.stat(target);
-    return stats.mtimeMs;
-  } catch {
-    return 0;
   }
 }
 

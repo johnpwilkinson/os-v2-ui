@@ -100,6 +100,31 @@ describe("tailJournal", () => {
     }
   });
 
+  test("replays all lines from index 0 when lastEventId is non-numeric, instead of dropping them [req:4.2]", async () => {
+    await writeJournal(['{"log":"a"}', '{"log":"b"}']);
+    const controller = new AbortController();
+
+    const generator = tailJournal(runId, "not-a-number", controller.signal);
+    try {
+      const first = await generator.next();
+      expect(isTrackedEnvelope(first.value)).toBe(true);
+      if (isTrackedEnvelope(first.value)) {
+        expect(first.value[0]).toBe("0");
+        expect(first.value[1]).toMatchObject({ type: "line", index: 0 });
+      }
+
+      const second = await generator.next();
+      expect(isTrackedEnvelope(second.value)).toBe(true);
+      if (isTrackedEnvelope(second.value)) {
+        expect(second.value[0]).toBe("1");
+        expect(second.value[1]).toMatchObject({ type: "line", index: 1 });
+      }
+    } finally {
+      controller.abort();
+      await generator.return(undefined);
+    }
+  });
+
   test("status event carries journal mtimeMs, finished flag from runner-summary.json, and env-derived stall threshold [req:4.3]", async () => {
     process.env.STALL_QUIET_MINUTES = "5";
     await writeJournal(['{"log":"a"}']);
@@ -149,6 +174,48 @@ describe("tailJournal", () => {
       await generator.return(undefined);
     }
   }, 10_000);
+
+  test("buffers a partial trailing line until its closing newline arrives, then emits exactly one line for it [req:4.1]", async () => {
+    await writeJournal(['{"log":"a"}']);
+    const controller = new AbortController();
+
+    const generator = tailJournal(runId, null, controller.signal);
+    try {
+      await generator.next(); // initial line 0
+      await generator.next(); // initial status
+
+      await fs.appendFile(path.join(runDir, "journal.jsonl"), '{"log":"partial"');
+
+      const afterPartialAppend = await generator.next();
+      expect(isTrackedEnvelope(afterPartialAppend.value)).toBe(false);
+      expect(afterPartialAppend.value).toMatchObject({ type: "status" });
+
+      // A brief pause ensures the closing write below is observed by the
+      // watcher as a distinct change from the partial write above, rather
+      // than the two being coalesced by filesystem mtime granularity.
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      await fs.appendFile(path.join(runDir, "journal.jsonl"), '}\n');
+
+      const lineEvent = await generator.next();
+      expect(isTrackedEnvelope(lineEvent.value)).toBe(true);
+      if (isTrackedEnvelope(lineEvent.value)) {
+        expect(lineEvent.value[0]).toBe("1");
+        expect(lineEvent.value[1]).toMatchObject({
+          type: "line",
+          index: 1,
+          line: { kind: "log", text: "partial" },
+        });
+      }
+
+      const statusEvent = await generator.next();
+      expect(isTrackedEnvelope(statusEvent.value)).toBe(false);
+      expect(statusEvent.value).toMatchObject({ type: "status" });
+    } finally {
+      controller.abort();
+      await generator.return(undefined);
+    }
+  }, 20_000);
 
   test("yields an untracked status event at least every 15 seconds with no file activity [req:4.3]", async () => {
     await writeJournal(['{"log":"a"}']);

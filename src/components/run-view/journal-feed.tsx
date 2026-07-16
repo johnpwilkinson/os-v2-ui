@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
 import type { LegStatus, RunJournalLine } from "@/lib/journal/types";
+import { STATUS_DOT_CLASSES } from "@/components/run-view/status-dot";
 
 interface JournalFeedProps {
   lines: RunJournalLine[];
@@ -11,12 +12,6 @@ interface JournalFeedProps {
 
 const ROW_HEIGHT_PX = 32;
 const STICK_THRESHOLD_PX = 40;
-
-const STATUS_DOT_CLASSES: Record<LegStatus, string> = {
-  done: "bg-emerald-500",
-  failed: "bg-red-500",
-  running: "bg-emerald-500 motion-safe:animate-pulse",
-};
 
 export function JournalFeed({ lines }: JournalFeedProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -91,6 +86,7 @@ function JournalRow({ line }: { line: RunJournalLine }) {
             status={line.ok ? "done" : "failed"}
             tokens={line.tokens}
             ms={line.ms}
+            error={line.error}
           />
         );
       case "battery":
@@ -138,9 +134,10 @@ interface LegRowProps {
   tokens?: number;
   ms?: number;
   exitCode?: number;
+  error?: string;
 }
 
-function LegRow({ label, status, tokens, ms, exitCode }: LegRowProps) {
+function LegRow({ label, status, tokens, ms, exitCode, error }: LegRowProps) {
   const numerals = [
     tokens !== undefined ? `${tokens} tok` : null,
     ms !== undefined ? `${ms} ms` : null,
@@ -161,6 +158,11 @@ function LegRow({ label, status, tokens, ms, exitCode }: LegRowProps) {
       {numerals.length > 0 && (
         <span className="shrink-0 font-mono tabular-nums text-xs text-zinc-500 dark:text-zinc-400">
           {numerals}
+        </span>
+      )}
+      {status === "failed" && error && (
+        <span className="shrink-0 max-w-[40%] truncate font-mono text-xs text-red-600 dark:text-red-400">
+          {error}
         </span>
       )}
     </div>

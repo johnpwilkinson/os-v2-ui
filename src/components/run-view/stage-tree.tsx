@@ -1,16 +1,11 @@
 "use client";
 
-import type { LegStatus, StageNode } from "@/lib/journal/types";
+import type { StageNode } from "@/lib/journal/types";
+import { STATUS_DOT_CLASSES } from "@/components/run-view/status-dot";
 
 interface StageTreeProps {
   stages: StageNode[];
 }
-
-const STATUS_DOT_CLASSES: Record<LegStatus, string> = {
-  done: "bg-emerald-500",
-  failed: "bg-red-500",
-  running: "bg-emerald-500 motion-safe:animate-pulse",
-};
 
 export function StageTree({ stages }: StageTreeProps) {
   return (

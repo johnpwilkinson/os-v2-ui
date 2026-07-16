@@ -14,7 +14,6 @@ describe("GateBanner", () => {
       <GateBanner
         summary={summary({ gate: "MERGED:footer-locale-badge" })}
         live={false}
-        feature={null}
         repoUrl={null}
       />,
     );
@@ -28,7 +27,6 @@ describe("GateBanner", () => {
       <GateBanner
         summary={summary({ halt_kind: "validate-nogo" })}
         live={false}
-        feature={null}
         repoUrl={null}
       />,
     );
@@ -37,9 +35,35 @@ describe("GateBanner", () => {
     expect(screen.getByText("validate-nogo")).toBeInTheDocument();
   });
 
+  it("shows the gate name as detail text when a halted summary has a gate field [req:9.6]", () => {
+    render(
+      <GateBanner
+        summary={summary({ halt_kind: "validate-nogo", gate: "gate-x" })}
+        live={false}
+        repoUrl={null}
+      />,
+    );
+
+    expect(screen.getByText("HALTED")).toBeInTheDocument();
+    expect(screen.getByText("gate-x")).toBeInTheDocument();
+  });
+
+  it("shows the error text as detail text when a halted summary has no gate but has an error [req:9.6]", () => {
+    render(
+      <GateBanner
+        summary={summary({ halt_kind: "exec-failure", error: "boom" })}
+        live={false}
+        repoUrl={null}
+      />,
+    );
+
+    expect(screen.getByText("HALTED")).toBeInTheDocument();
+    expect(screen.getByText("boom")).toBeInTheDocument();
+  });
+
   it("shows RUNNING with a pulse dot when there is no summary and the run is live [req:9.6]", () => {
     const { container } = render(
-      <GateBanner summary={null} live={true} feature={null} repoUrl={null} />,
+      <GateBanner summary={null} live={true} repoUrl={null} />,
     );
 
     expect(screen.getByText("RUNNING")).toBeInTheDocument();
@@ -48,7 +72,7 @@ describe("GateBanner", () => {
 
   it("shows INCOMPLETE when there is no summary and the run is not live [req:9.6]", () => {
     const { container } = render(
-      <GateBanner summary={null} live={false} feature={null} repoUrl={null} />,
+      <GateBanner summary={null} live={false} repoUrl={null} />,
     );
 
     expect(screen.getByText("INCOMPLETE")).toBeInTheDocument();
@@ -60,7 +84,6 @@ describe("GateBanner", () => {
       <GateBanner
         summary={null}
         live={false}
-        feature={null}
         repoUrl="https://github.com/acme/widgets"
       />,
     );
@@ -70,7 +93,7 @@ describe("GateBanner", () => {
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", "noopener noreferrer");
 
-    rerender(<GateBanner summary={null} live={false} feature={null} repoUrl={null} />);
+    rerender(<GateBanner summary={null} live={false} repoUrl={null} />);
     expect(screen.queryByRole("link", { name: /open repository/i })).not.toBeInTheDocument();
   });
 });

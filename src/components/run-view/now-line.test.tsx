@@ -1,13 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
 import { NowLine } from "@/components/run-view/now-line";
-
-function flush(ms = 10): Promise<void> {
-  return act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, ms));
-  });
-}
 
 describe("NowLine", () => {
   it("shows the current running-leg label [req:9.7]", () => {
@@ -15,6 +9,7 @@ describe("NowLine", () => {
       <NowLine
         nowLabel="build:web"
         mtimeMs={Date.now()}
+        now={Date.now()}
         finished={false}
         stallAfterMs={60_000}
       />,
@@ -25,50 +20,60 @@ describe("NowLine", () => {
 
   it("shows idle when there is no running leg [req:9.7]", () => {
     render(
-      <NowLine nowLabel={null} mtimeMs={Date.now()} finished={false} stallAfterMs={60_000} />,
+      <NowLine
+        nowLabel={null}
+        mtimeMs={Date.now()}
+        now={Date.now()}
+        finished={false}
+        stallAfterMs={60_000}
+      />,
     );
 
     expect(screen.getByText("idle")).toBeInTheDocument();
   });
 
-  it("shows the STALLED badge once Date.now() - mtimeMs exceeds stallAfterMs on an unfinished run [req:9.7]", async () => {
+  it("shows the STALLED badge once now - mtimeMs exceeds stallAfterMs on an unfinished run [req:9.7]", () => {
+    const mtimeMs = Date.now() - 500;
     render(
       <NowLine
         nowLabel="build:web"
-        mtimeMs={Date.now() - 500}
+        mtimeMs={mtimeMs}
+        now={mtimeMs + 500}
         finished={false}
         stallAfterMs={1}
       />,
     );
 
-    await waitFor(() => expect(screen.getByText("STALLED")).toBeInTheDocument());
+    expect(screen.getByText("STALLED")).toBeInTheDocument();
   });
 
-  it("does not show STALLED while within the stall threshold on an unfinished run [req:9.7]", async () => {
+  it("does not show STALLED while within the stall threshold on an unfinished run [req:9.7]", () => {
+    const now = Date.now();
     render(
       <NowLine
         nowLabel="build:web"
-        mtimeMs={Date.now()}
+        mtimeMs={now}
+        now={now}
         finished={false}
         stallAfterMs={60_000_000}
       />,
     );
 
-    await flush();
     expect(screen.queryByText("STALLED")).not.toBeInTheDocument();
   });
 
-  it("does not show STALLED on a finished run even when far past the stall threshold [req:9.7]", async () => {
+  it("does not show STALLED on a finished run even when far past the stall threshold [req:9.7]", () => {
+    const now = Date.now();
     render(
       <NowLine
         nowLabel="build:web"
-        mtimeMs={Date.now() - 1_000_000}
+        mtimeMs={now - 1_000_000}
+        now={now}
         finished={true}
         stallAfterMs={1}
       />,
     );
 
-    await flush();
     expect(screen.queryByText("STALLED")).not.toBeInTheDocument();
   });
 });

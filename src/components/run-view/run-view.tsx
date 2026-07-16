@@ -138,10 +138,11 @@ function RunViewShell({ runId }: RunViewProps) {
   return (
     <RunViewFrame>
       <RunPicker runs={runs} selectedRunId={runId} />
-      <GateBanner summary={summary} live={live} feature={null} repoUrl={snapshot.repoUrl} />
+      <GateBanner summary={summary} live={live} repoUrl={snapshot.repoUrl} />
       <NowLine
         nowLabel={derived.nowLine}
         mtimeMs={status?.mtimeMs ?? snapshot.mtimeMs ?? now ?? 0}
+        now={now ?? 0}
         finished={finished}
         stallAfterMs={status?.stallAfterMs ?? DEFAULT_STALL_AFTER_MS}
       />
