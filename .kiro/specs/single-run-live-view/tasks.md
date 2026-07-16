@@ -75,3 +75,6 @@
   _Requirements: 1.3, 1.4, 1.5, 8.4, 8.5, 9.11_
   _Boundary: src/app/run, src/app/page.tsx_
   _Depends: 4.4_
+
+## Implementation Notes
+- mechanical verify RED: { ok :false, detail : declared files missing under /work/repo-worktrees/single-run-live-view: src/app/page.tsx (edited), src/app/run/[runId]/page.tsx (new), src/app/run/[runId]/page.test.tsx (new) — the implementation was likely written OUTSIDE this worktree (cwd escape); re-create every changed file under /work/repo-worktrees/single-run-live-view and re-run , data :{ missing :[ src/app/page.tsx (edited) , src/app/run/[runId]/page.tsx (new) , src/app/run/[runId]/page.test.tsx (new) ]}}
