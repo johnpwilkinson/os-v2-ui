@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
 import { JournalFeed } from "@/components/run-view/journal-feed";
-import type { JournalLine } from "@/lib/journal/types";
+import type { JournalLine, RunJournalLine } from "@/lib/journal/types";
 
 beforeEach(() => {
   Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
@@ -47,5 +47,16 @@ describe("JournalFeed", () => {
 
     expect(() => render(<JournalFeed lines={lines} />)).not.toThrow();
     expect(screen.getByText("not-json-and-not-recognized $$$")).toBeInTheDocument();
+  });
+
+  it("renders a source badge for lines tagged with a turbo-* source directory [req:9.5]", () => {
+    const lines: RunJournalLine[] = [
+      { kind: "log", text: "nested-log", raw: "nested-log", source: "turbo-x-feat" },
+    ];
+
+    render(<JournalFeed lines={lines} />);
+
+    expect(screen.getByText("turbo-x-feat")).toBeInTheDocument();
+    expect(screen.getByText("nested-log")).toBeInTheDocument();
   });
 });

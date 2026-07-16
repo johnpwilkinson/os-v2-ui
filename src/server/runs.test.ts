@@ -128,4 +128,14 @@ describe("normalizeSummary", () => {
       live_input_tokens: undefined,
     });
   });
+
+  test("folds child-era llm_replayed into llmHops alongside llm_live [req:9.5]", () => {
+    const childEraShape = normalizeSummary({ exec: 2, llm_live: 15, llm_replayed: 4 });
+
+    expect(childEraShape).toMatchObject({
+      execCount: 2,
+      llmHops: 19,
+      turboRuns: null,
+    });
+  });
 });

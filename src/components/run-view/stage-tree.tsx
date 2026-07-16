@@ -9,7 +9,7 @@ interface StageTreeProps {
 const STATUS_DOT_CLASSES: Record<LegStatus, string> = {
   done: "bg-emerald-500",
   failed: "bg-red-500",
-  running: "bg-amber-500 motion-safe:animate-pulse",
+  running: "bg-emerald-500 motion-safe:animate-pulse",
 };
 
 export function StageTree({ stages }: StageTreeProps) {

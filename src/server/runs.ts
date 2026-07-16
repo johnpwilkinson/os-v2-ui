@@ -2,7 +2,7 @@ import { promises as fs, type Dirent } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { parseJournal } from "@/lib/journal/parse";
-import type { JournalLine, NormalizedSummary } from "@/lib/journal/types";
+import type { NormalizedSummary, RunJournalLine } from "@/lib/journal/types";
 
 export interface RunListEntry {
   runId: string;
@@ -14,7 +14,7 @@ export interface EngineState {
   [key: string]: unknown;
 }
 
-export type RunJournalLine = JournalLine & { source?: string };
+export type { RunJournalLine } from "@/lib/journal/types";
 
 export type ReadRunSnapshotResult =
   | { ok: false }
@@ -103,7 +103,9 @@ export function normalizeSummary(json: unknown): NormalizedSummary {
     turboRuns = typeof dispatchCounts.turboRuns === "number" ? dispatchCounts.turboRuns : null;
   } else {
     execCount = typeof record.exec === "number" ? record.exec : undefined;
-    llmHops = typeof record.llm_live === "number" ? record.llm_live : undefined;
+    const llmLive = typeof record.llm_live === "number" ? record.llm_live : undefined;
+    const llmReplayed = typeof record.llm_replayed === "number" ? record.llm_replayed : undefined;
+    llmHops = llmLive === undefined && llmReplayed === undefined ? undefined : (llmLive ?? 0) + (llmReplayed ?? 0);
   }
 
   return {

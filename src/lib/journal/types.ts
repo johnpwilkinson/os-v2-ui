@@ -23,6 +23,8 @@ export type JournalLine =
   | { kind: "log"; text: string; raw: string }
   | { kind: "unknown"; raw: string };
 
+export type RunJournalLine = JournalLine & { source?: string };
+
 export type LegStatus = "running" | "done" | "failed";
 
 export interface StageLeg {

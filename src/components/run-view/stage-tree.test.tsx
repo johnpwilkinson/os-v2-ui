@@ -37,7 +37,8 @@ describe("StageTree", () => {
       Array.from(dots).find((dot) => dot.nextSibling?.textContent === label)?.className;
 
     expect(classesFor("impl:web")).toContain("bg-emerald-500");
-    expect(classesFor("impl:api")).toContain("bg-amber-500");
+    expect(classesFor("impl:api")).toContain("bg-emerald-500");
+    expect(classesFor("impl:api")).toContain("motion-safe:animate-pulse");
     expect(classesFor("impl:cli")).toContain("bg-red-500");
   });
 

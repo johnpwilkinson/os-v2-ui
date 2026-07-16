@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
-import type { JournalLine, LegStatus } from "@/lib/journal/types";
+import type { LegStatus, RunJournalLine } from "@/lib/journal/types";
 
 interface JournalFeedProps {
-  lines: JournalLine[];
+  lines: RunJournalLine[];
 }
 
 const ROW_HEIGHT_PX = 32;
@@ -15,7 +15,7 @@ const STICK_THRESHOLD_PX = 40;
 const STATUS_DOT_CLASSES: Record<LegStatus, string> = {
   done: "bg-emerald-500",
   failed: "bg-red-500",
-  running: "bg-amber-500 motion-safe:animate-pulse",
+  running: "bg-emerald-500 motion-safe:animate-pulse",
 };
 
 export function JournalFeed({ lines }: JournalFeedProps) {
@@ -79,35 +79,57 @@ export function JournalFeed({ lines }: JournalFeedProps) {
   );
 }
 
-function JournalRow({ line }: { line: JournalLine }) {
-  switch (line.kind) {
-    case "leg-start":
-      return <LegRow label={line.label} status="running" />;
-    case "leg-complete":
-      return (
-        <LegRow
-          label={line.label}
-          status={line.ok ? "done" : "failed"}
-          tokens={line.tokens}
-          ms={line.ms}
-        />
-      );
-    case "battery":
-      return (
-        <LegRow
-          label={line.label}
-          status={line.start ? "running" : line.ok ? "done" : "failed"}
-          ms={line.ms}
-          exitCode={line.exitCode}
-        />
-      );
-    case "evt":
-      return <EvtRow evtType={line.evtType} payload={line.payload} />;
-    case "log":
-      return <LogRow text={line.text} />;
-    case "unknown":
-      return <UnknownRow raw={line.raw} />;
-  }
+function JournalRow({ line }: { line: RunJournalLine }) {
+  const row = (() => {
+    switch (line.kind) {
+      case "leg-start":
+        return <LegRow label={line.label} status="running" />;
+      case "leg-complete":
+        return (
+          <LegRow
+            label={line.label}
+            status={line.ok ? "done" : "failed"}
+            tokens={line.tokens}
+            ms={line.ms}
+          />
+        );
+      case "battery":
+        return (
+          <LegRow
+            label={line.label}
+            status={line.start ? "running" : line.ok ? "done" : "failed"}
+            ms={line.ms}
+            exitCode={line.exitCode}
+          />
+        );
+      case "evt":
+        return <EvtRow evtType={line.evtType} payload={line.payload} />;
+      case "log":
+        return <LogRow text={line.text} />;
+      case "unknown":
+        return <UnknownRow raw={line.raw} />;
+    }
+  })();
+
+  if (!line.source) return row;
+
+  return (
+    <div className="flex h-full items-center gap-1">
+      <SourceBadge source={line.source} />
+      <div className="h-full min-w-0 flex-1">{row}</div>
+    </div>
+  );
+}
+
+function SourceBadge({ source }: { source: string }) {
+  return (
+    <span
+      title={source}
+      className="shrink-0 rounded border border-zinc-300 px-1 font-mono text-[10px] uppercase text-zinc-500 dark:border-zinc-700 dark:text-zinc-500"
+    >
+      {source}
+    </span>
+  );
 }
 
 interface LegRowProps {
