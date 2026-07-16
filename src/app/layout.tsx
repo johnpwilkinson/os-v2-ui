@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DrillRunwayCheck } from "@/components/drill-runway-check/drill-runway-check";
+import { DrillWaveACert } from "@/components/drill-wave-a-cert/drill-wave-a-cert";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export default function RootLayout({
       lang="en"
       className="h-full antialiased"
     >
-      <body className="min-h-full flex flex-col">{children}<DrillRunwayCheck /></body>
+      <body className="min-h-full flex flex-col">{children}<DrillRunwayCheck /><DrillWaveACert /></body>
     </html>
   );
 }
