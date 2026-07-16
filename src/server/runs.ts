@@ -7,6 +7,7 @@ import type { NormalizedSummary, RunJournalLine } from "@/lib/journal/types";
 export interface RunListEntry {
   runId: string;
   finished: boolean;
+  mtimeMs: number;
 }
 
 export interface EngineState {
@@ -53,6 +54,15 @@ async function fileExists(target: string): Promise<boolean> {
   }
 }
 
+async function mtimeMsOf(target: string): Promise<number> {
+  try {
+    const stats = await fs.stat(target);
+    return stats.mtimeMs;
+  } catch {
+    return 0;
+  }
+}
+
 async function readFileOrEmpty(target: string): Promise<string> {
   try {
     return await fs.readFile(target, "utf8");
@@ -82,6 +92,7 @@ export async function listRuns(): Promise<RunListEntry[]> {
     runIds.map(async (runId) => ({
       runId,
       finished: await fileExists(path.join(root, runId, "runner-summary.json")),
+      mtimeMs: await mtimeMsOf(path.join(root, runId)),
     })),
   );
 }

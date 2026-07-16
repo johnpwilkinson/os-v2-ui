@@ -40,7 +40,9 @@ describe("RunView", () => {
   });
 
   it("renders finished-run mode with summary-derived numbers and no live subscription [req:9.10]", () => {
-    listQuery.mockReturnValue({ data: [{ runId: "run-1", finished: true }] });
+    listQuery.mockReturnValue({
+      data: [{ runId: "run-1", finished: true, mtimeMs: Date.now() }],
+    });
     getQuery.mockReturnValue({
       data: {
         ok: true,

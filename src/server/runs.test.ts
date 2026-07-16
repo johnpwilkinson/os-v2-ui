@@ -57,10 +57,21 @@ describe("listRuns", () => {
 
     expect(runs).toEqual(
       expect.arrayContaining([
-        { runId: "run-finished", finished: true },
-        { runId: "run-unfinished", finished: false },
+        expect.objectContaining({ runId: "run-finished", finished: true }),
+        expect.objectContaining({ runId: "run-unfinished", finished: false }),
       ]),
     );
+  });
+
+  test("reports mtimeMs from the run directory's own mtime, viewer-local (no raw UTC string) [req:7.9]", async () => {
+    const runDir = await makeRunDir("run-with-mtime");
+    const stats = await fs.stat(runDir);
+
+    const runs = await listRuns();
+
+    expect(runs).toEqual([
+      expect.objectContaining({ runId: "run-with-mtime", mtimeMs: stats.mtimeMs }),
+    ]);
   });
 });
 

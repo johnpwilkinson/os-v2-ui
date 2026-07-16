@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { formatDistanceToNowStrict } from "date-fns";
 
 import {
   Select,
@@ -13,6 +14,7 @@ import {
 interface RunPickerRun {
   runId: string;
   finished: boolean;
+  mtimeMs: number;
 }
 
 interface RunPickerProps {
@@ -35,6 +37,9 @@ export function RunPicker({ runs, selectedRunId }: RunPickerProps) {
         {runs.map((run) => (
           <SelectItem key={run.runId} value={run.runId}>
             <span>{run.runId}</span>
+            <span className="text-[10px] text-zinc-500 dark:text-zinc-400">
+              {formatDistanceToNowStrict(run.mtimeMs, { addSuffix: true })}
+            </span>
             {!run.finished && (
               <span className="text-[10px] uppercase text-emerald-600 dark:text-emerald-400">
                 LIVE
