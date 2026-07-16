@@ -13,7 +13,7 @@
   _Depends: 1.1_
 
 - [ ] 2. Root layout mount
-- [ ] 2.1 Edit `src/app/layout.tsx` to import `DrillRunwayCheck` from `@/components/drill-runway-check/drill-runway-check` and mount `<DrillRunwayCheck />` exactly once inside `<body>`, immediately after `{children}`. Every other part of the file — fonts, metadata, and the existing `html`/`body` className values — stays byte-identical. Verify `npm run build` passes.
+- [x] 2.1 Edit `src/app/layout.tsx` to import `DrillRunwayCheck` from `@/components/drill-runway-check/drill-runway-check` and mount `<DrillRunwayCheck />` exactly once inside `<body>`, immediately after `{children}`. Every other part of the file — fonts, metadata, and the existing `html`/`body` className values — stays byte-identical. Verify `npm run build` passes.
   _Requirements: 2.1, 2.2_
   _Boundary: src/app/layout.tsx_
   _Depends: 1.1_
