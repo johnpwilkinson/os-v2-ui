@@ -3,7 +3,7 @@
 ## Tasks
 
 - [ ] 1. Drill marker component
-- [ ] 1.1 Implement `DrillRunwayCheck` in `src/components/drill-runway-check/drill-runway-check.tsx`: a prop-less, state-less server component (no `"use client"` directive, no imports beyond what the JSX requires) whose entire render is `<div className="py-2 text-center text-xs text-muted-foreground">os-v2-ui</div>` — exact text `os-v2-ui`, no interactive elements, no event handlers, no additional markup.
+- [x] 1.1 Implement `DrillRunwayCheck` in `src/components/drill-runway-check/drill-runway-check.tsx`: a prop-less, state-less server component (no `"use client"` directive, no imports beyond what the JSX requires) whose entire render is `<div className="py-2 text-center text-xs text-muted-foreground">os-v2-ui</div>` — exact text `os-v2-ui`, no interactive elements, no event handlers, no additional markup.
   _Requirements: 1.1, 1.2, 1.3, 1.4_
   _Boundary: src/components/drill-runway-check_
 
