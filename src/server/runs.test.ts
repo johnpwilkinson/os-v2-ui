@@ -2,15 +2,18 @@ import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { listRuns, normalizeSummary, readRunSnapshot } from "./runs";
+import { listRuns, normalizeSummary, readRunSnapshot, resolveRepoUrl } from "./runs";
 
 let tmpRoot: string;
 let previousArtifactsDir: string | undefined;
+let previousRepoUrl: string | undefined;
 
 beforeEach(async () => {
   tmpRoot = await fs.mkdtemp(path.join(os.tmpdir(), "runs-test-"));
   previousArtifactsDir = process.env.CHAMBER_ARTIFACTS_DIR;
   process.env.CHAMBER_ARTIFACTS_DIR = tmpRoot;
+  previousRepoUrl = process.env.CHAMBER_REPO_URL;
+  delete process.env.CHAMBER_REPO_URL;
 });
 
 afterEach(async () => {
@@ -18,6 +21,11 @@ afterEach(async () => {
     delete process.env.CHAMBER_ARTIFACTS_DIR;
   } else {
     process.env.CHAMBER_ARTIFACTS_DIR = previousArtifactsDir;
+  }
+  if (previousRepoUrl === undefined) {
+    delete process.env.CHAMBER_REPO_URL;
+  } else {
+    process.env.CHAMBER_REPO_URL = previousRepoUrl;
   }
   await fs.rm(tmpRoot, { recursive: true, force: true });
 });
@@ -114,6 +122,41 @@ describe("readRunSnapshot", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.mtimeMs).toBe(stats.mtimeMs);
+  });
+});
+
+describe("resolveRepoUrl", () => {
+  test("finds an https github.com URL inside result.json [req:9.5]", async () => {
+    const runDir = await makeRunDir("run-https-url");
+    await fs.writeFile(
+      path.join(runDir, "result.json"),
+      JSON.stringify({ remote: "https://github.com/acme/widgets.git" }),
+    );
+
+    await expect(resolveRepoUrl("run-https-url")).resolves.toBe("https://github.com/acme/widgets");
+  });
+
+  test("normalizes a git@github.com:owner/repo.git SSH remote in result.json [req:9.5]", async () => {
+    const runDir = await makeRunDir("run-ssh-url");
+    await fs.writeFile(
+      path.join(runDir, "result.json"),
+      JSON.stringify({ remote: "git@github.com:acme/widgets.git" }),
+    );
+
+    await expect(resolveRepoUrl("run-ssh-url")).resolves.toBe("https://github.com/acme/widgets");
+  });
+
+  test("falls back to CHAMBER_REPO_URL when result.json has no github URL [req:9.5]", async () => {
+    await makeRunDir("run-no-url");
+    process.env.CHAMBER_REPO_URL = "https://github.com/acme/fallback";
+
+    await expect(resolveRepoUrl("run-no-url")).resolves.toBe("https://github.com/acme/fallback");
+  });
+
+  test("returns null when there is no result.json and no CHAMBER_REPO_URL fallback [req:9.5]", async () => {
+    await makeRunDir("run-nothing");
+
+    await expect(resolveRepoUrl("run-nothing")).resolves.toBeNull();
   });
 });
 
