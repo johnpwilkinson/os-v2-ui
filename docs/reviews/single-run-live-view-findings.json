@@ -1,0 +1,19 @@
+{
+  "feature": "single-run-live-view",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "src/server/runs.ts",
+      "line": 134,
+      "issue": "readRunSnapshot (and resolveRepoUrl at line 207, and journal-tail.ts's tailJournal at line 58) join the caller-supplied runId directly into a filesystem path with no normalization or containment check. path.join(artifactsRoot(), \"../../etc\", \"journal.jsonl\") resolves clean outside artifactsRoot, confirmed by direct test. runId reaches these functions straight from the public POST /api/trpc endpoint (runs.get, runs.journalTail), independent of what the well-behaved UI sends, so any network peer can probe for files literally named journal.jsonl/runner-summary.json/result.json anywhere on the host. This violates design.md's explicit 'strictly READ-ONLY consumer of ~/chamber-artifacts/' boundary commitment, and has zero test coverage.",
+      "fix_hint": "Reject runId values containing path separators or '..' segments (e.g. validate against /^[\\w.-]+$/ in the zod schema, or resolve the joined path and assert it startsWith(path.resolve(artifactsRoot())) before any fs call), and add a runs.test.ts / journal-tail.test.ts case asserting a traversal-shaped runId is rejected rather than escaping the root."
+    },
+    {
+      "severity": "low",
+      "file": "plans/README.md",
+      "line": 10,
+      "issue": "Entries 006-013 (MED) are marked 'deferred' and 912-915 (LOW) are marked 'residual', but the final commit e5bd2ae actually fixed every one of them (verified in current source: status-dot.ts, fs-helpers.ts, gate-banner feature prop removed, single now-ticker, etc). This tracking doc and docs/dev-engine/PR-single-run-live-view.md were never updated after e5bd2ae, so the PR's own audit trail misstates the shipped code's state.",
+      "fix_hint": "Update plans/README.md and docs/dev-engine/PR-single-run-live-view.md status columns to fixed(e5bd2ae) for entries 006-013 and 912-915, so the tracking doc matches reality."
+    }
+  ]
+}
