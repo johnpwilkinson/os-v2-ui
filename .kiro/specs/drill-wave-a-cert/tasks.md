@@ -13,7 +13,7 @@
   _Depends: 1.1_
 
 - [ ] 2. Root layout mount
-- [ ] 2.1 Edit `src/app/layout.tsx` to import `DrillWaveACert` from `@/components/drill-wave-a-cert/drill-wave-a-cert` and mount `<DrillWaveACert />` exactly once inside `<body>`, immediately after the existing `<DrillRunwayCheck />`. Every other part of the file — fonts, metadata, the `{children}` slot, the existing `<DrillRunwayCheck />` mount, and the existing `html`/`body` className values — stays byte-identical. Verify `npm run build` passes.
+- [x] 2.1 Edit `src/app/layout.tsx` to import `DrillWaveACert` from `@/components/drill-wave-a-cert/drill-wave-a-cert` and mount `<DrillWaveACert />` exactly once inside `<body>`, immediately after the existing `<DrillRunwayCheck />`. Every other part of the file — fonts, metadata, the `{children}` slot, the existing `<DrillRunwayCheck />` mount, and the existing `html`/`body` className values — stays byte-identical. Verify `npm run build` passes.
   _Requirements: 2.1, 2.2_
   _Boundary: src/app/layout.tsx_
   _Depends: 1.1_
