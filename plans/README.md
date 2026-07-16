@@ -7,3 +7,19 @@ LOW findings are never executed; they are recorded as residual.
 | # | plan | severity | status |
 |---|------|----------|--------|
 | 001 | onclick-attribute-check-can-t-detect-a-r | MED | pending |
+| 002 | live-run-never-adopts-finished-state-fro | HIGH | pending |
+| 003 | finished-run-nowline-fabricates-now-as-l | HIGH | pending |
+| 004 | live-run-subscription-path-has-zero-test | HIGH | pending |
+| 005 | resolverepourl-has-no-test-coverage-anyw | HIGH | pending |
+| 006 | status-dot-classes-duplicated-verbatim-a | MED | pending |
+| 007 | fs-helper-functions-duplicated-between-r | MED | pending |
+| 008 | gatebanner-s-feature-prop-is-declared-bu | MED | pending |
+| 009 | approuter-s-runs-get-merge-logic-is-unte | MED | pending |
+| 010 | malformed-lasteventid-silently-drops-all | MED | pending |
+| 011 | partial-trailing-line-buffering-is-docum | MED | pending |
+| 012 | halted-banner-s-gate-error-detail-text-b | MED | pending |
+| 013 | evt-battery-leg-start-row-branches-in-jo | MED | pending |
+| 912 | gatebanner-s-feature-prop-is-required-bu | LOW | residual |
+| 913 | two-independent-30s-now-tickers-do-the-s | LOW | residual |
+| 914 | failed-leg-s-error-message-text-is-never | LOW | residual |
+| 915 | root-home-page-s-newest-run-empty-state | LOW | residual |
