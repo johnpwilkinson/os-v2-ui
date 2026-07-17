@@ -25,3 +25,11 @@ LOW findings are never executed; they are recorded as residual.
 | 915 | root-home-page-s-newest-run-empty-state | LOW | fixed(e5bd2ae) |
 | 014 | onclick-attribute-check-never-detects-a | MED | pending |
 | 901 | tohavetextcontent-assertion-is-tautologi | LOW | residual |
+| 015 | live-panel-and-link-down-banner-render-s | MED | pending |
+| 016 | linkup-prop-s-false-branch-is-unreachabl | MED | pending |
+| 017 | console-state-trpc-procedure-has-zero-te | MED | pending |
+| 018 | parseengine-s-non-object-and-watchqueued | MED | pending |
+| 904 | non-iso-ts-expiresat-renders-nan-nan-nan | LOW | residual |
+| 905 | optimalnext-s-linkup-false-red-dot-branc | LOW | residual |
+| 906 | decisionrow-s-null-repo-feature-runid-an | LOW | residual |
+| 907 | engine-null-engine-panel-rendering-is-un | LOW | residual |
