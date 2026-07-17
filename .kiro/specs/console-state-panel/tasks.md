@@ -43,7 +43,7 @@
   _Requirements: 2.1, 3.1_
   _Boundary: src/app/console_
   _Depends: 3.2_
-- [ ]* 4.2 Test src/app/console/page.test.tsx naming [req:2.1]: the module exports dynamic equal to force-dynamic and rendering the page with the trpc module mocked to the active fixture shows the >>> directive text
+- [x]* 4.2 Test src/app/console/page.test.tsx naming [req:2.1]: the module exports dynamic equal to force-dynamic and rendering the page with the trpc module mocked to the active fixture shows the >>> directive text
   _Requirements: 2.1_
   _Boundary: src/app/console_
   _Depends: 4.1_
