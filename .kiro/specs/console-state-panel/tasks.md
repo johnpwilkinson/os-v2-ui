@@ -39,7 +39,7 @@
   _Depends: 3.1, 3.2_
 
 - [ ] 4. Route
-- [ ] 4.1 Create src/app/console/page.tsx exactly per design Concrete Shape: export const dynamic = force-dynamic and a default ConsolePage component returning ConsolePanel from @/components/console-panel/console-panel; no other route or layout files change
+- [x] 4.1 Create src/app/console/page.tsx exactly per design Concrete Shape: export const dynamic = force-dynamic and a default ConsolePage component returning ConsolePanel from @/components/console-panel/console-panel; no other route or layout files change
   _Requirements: 2.1, 3.1_
   _Boundary: src/app/console_
   _Depends: 3.2_
