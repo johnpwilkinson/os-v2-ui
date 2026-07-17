@@ -12,7 +12,7 @@
   _Depends: 1.1_
 
 - [ ] 2. Server bridge fetch and tRPC
-- [ ] 2.1 Create src/server/console.ts exactly per design Concrete Shape: bridgeUrl() honoring CHAMBER_BRIDGE_URL with default http://127.0.0.1:8378 and fetchConsoleState(fetchFn: typeof fetch = fetch) returning { ok: false; error } | { ok: true; raw: unknown } with headers X-Chamber-Bridge: 1, cache no-store, AbortSignal.timeout(5000), non-200 mapped to bridge http NNN and throws mapped to bridge unreachable: message
+- [x] 2.1 Create src/server/console.ts exactly per design Concrete Shape: bridgeUrl() honoring CHAMBER_BRIDGE_URL with default http://127.0.0.1:8378 and fetchConsoleState(fetchFn: typeof fetch = fetch) returning { ok: false; error } | { ok: true; raw: unknown } with headers X-Chamber-Bridge: 1, cache no-store, AbortSignal.timeout(5000), non-200 mapped to bridge http NNN and throws mapped to bridge unreachable: message
   _Requirements: 1.1, 1.2, 1.3_
   _Boundary: src/server_
 - [ ]* 2.2 Tests src/server/console.test.ts naming [req:1.1] [req:1.2] [req:1.3] [req:4.1]: injected fake fetch only (never real network); 200 JSON yields ok true with raw; non-200 yields bridge http NNN; throwing fake yields bridge unreachable prefix; fake call args assert the /console/state URL, the X-Chamber-Bridge header value 1, and CHAMBER_BRIDGE_URL override plus default
