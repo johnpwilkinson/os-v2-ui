@@ -19,7 +19,7 @@
   _Requirements: 1.1, 1.2, 1.3, 4.1_
   _Boundary: src/server_
   _Depends: 2.1_
-- [ ] 2.3 Touch src/server/api.ts ONLY to add the console router per design Concrete Shape: console.state = t.procedure.query composing fetchConsoleState from @/server/console then parseConsoleState from @/lib/console/parse, returning { ok: false as const, error } on fetch failure, { ok: false as const, error: 'malformed console state' } on parse null, else { ok: true as const, state }; the runs router and everything else in the file stays byte-identical
+- [x] 2.3 Touch src/server/api.ts ONLY to add the console router per design Concrete Shape: console.state = t.procedure.query composing fetchConsoleState from @/server/console then parseConsoleState from @/lib/console/parse, returning { ok: false as const, error } on fetch failure, { ok: false as const, error: 'malformed console state' } on parse null, else { ok: true as const, state }; the runs router and everything else in the file stays byte-identical
   _Requirements: 1.1, 1.4_
   _Boundary: src/server_
   _Depends: 1.1, 2.1_
