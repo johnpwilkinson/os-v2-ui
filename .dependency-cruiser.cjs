@@ -22,7 +22,7 @@ module.exports = {
       from: { path: "^src/components/ui/" },
       to: { path: "^src/lib/journal/" },
     },
-{
+    {
       name: "sdd-drill-wave-a-cert-drill-independence",
       comment: "sdd-derived from kiro design commitment \"Drill independence\": `src/components/drill-wave-a-cert` MUST NOT import `src/components/drill-runway-check` — the two drill markers stay fully independent throwaways.",
       severity: "error",
@@ -42,6 +42,27 @@ module.exports = {
       severity: "error",
       from: { path: "^src/components/drill-wave-a-cert" },
       to: { path: "^src/components/run-view" },
+    },
+    {
+      name: "sdd-console-state-panel-console-lib-purity",
+      comment: "sdd-derived from kiro design commitment \"console lib purity\": `src/lib/console` MUST NOT import `src/server`",
+      severity: "warn",
+      from: { path: "^src/lib/console" },
+      to: { path: "^src/server" },
+    },
+    {
+      name: "sdd-console-state-panel-console-lib-no-ui",
+      comment: "sdd-derived from kiro design commitment \"console lib no ui\": `src/lib/console` MUST NOT import `src/components`",
+      severity: "warn",
+      from: { path: "^src/lib/console" },
+      to: { path: "^src/components" },
+    },
+    {
+      name: "sdd-console-state-panel-panel-no-server-runtime",
+      comment: "sdd-derived from kiro design commitment \"panel no server runtime\": `src/components/console-panel` MUST NOT import `src/server/console`",
+      severity: "warn",
+      from: { path: "^src/components/console-panel" },
+      to: { path: "^src/server/console" },
     },
     // EDIT-ME: sdd-derived rules (end)
   ],
