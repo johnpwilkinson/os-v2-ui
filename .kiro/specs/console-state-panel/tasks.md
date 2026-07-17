@@ -33,7 +33,7 @@
   _Requirements: 2.1, 2.3, 2.4, 2.5, 2.6, 3.1, 3.4, 3.5_
   _Boundary: src/components/console-panel_
   _Depends: 3.1, 2.3_
-- [ ]* 3.3 Tests src/components/console-panel/optimal-next.test.tsx, decision-row.test.tsx, console-panel.test.tsx naming [req:2.1] [req:2.2] [req:2.3] [req:2.4] [req:2.5] [req:3.2] [req:3.3] [req:4.2]: render from src/lib/console/fixtures only; assert [ OPTIMAL NEXT ] caption and >>> directive; halt row and non-Merge verdict row carry text-[#E61919] while a Merge verdict row does not; idle fixture shows NO PENDING DECISIONS; shell with mocked trpc module shows LINK DOWN plus error on ok false and asserts useQuery was called with refetchInterval 5000; exactly one element with bg-[#4AF626] in the live tree
+- [x]* 3.3 Tests src/components/console-panel/optimal-next.test.tsx, decision-row.test.tsx, console-panel.test.tsx naming [req:2.1] [req:2.2] [req:2.3] [req:2.4] [req:2.5] [req:3.2] [req:3.3] [req:4.2]: render from src/lib/console/fixtures only; assert [ OPTIMAL NEXT ] caption and >>> directive; halt row and non-Merge verdict row carry text-[#E61919] while a Merge verdict row does not; idle fixture shows NO PENDING DECISIONS; shell with mocked trpc module shows LINK DOWN plus error on ok false and asserts useQuery was called with refetchInterval 5000; exactly one element with bg-[#4AF626] in the live tree
   _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 3.2, 3.3, 4.2_
   _Boundary: src/components/console-panel_
   _Depends: 3.1, 3.2_
