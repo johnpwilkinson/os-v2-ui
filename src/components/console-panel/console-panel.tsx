@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createClient, trpc } from "@/components/console-panel/trpc";
 import { OptimalNext } from "@/components/console-panel/optimal-next";
 import { DecisionRow } from "@/components/console-panel/decision-row";
+import { RunsBoard } from "@/components/console-panel/runs-board";
 
 const MICRO_LABEL = "text-[11px] uppercase tracking-[0.08em] text-[#EAEAEA]/60";
 const PRIMARY_TEXT = "text-sm [text-shadow:0_0_6px_rgba(234,234,234,0.22)]";
@@ -71,14 +72,7 @@ function ConsolePanelShell() {
             </div>
 
             <div className="bg-[#0A0A0A] p-4">
-              <span className={MICRO_LABEL}>[ ENGINE ]</span>
-              <div className={`mt-2 ${PRIMARY_TEXT}`}>
-                {state.engine
-                  ? `${(state.engine.phase ?? "—").toUpperCase()} :: ${state.engine.repo ?? "—"}/${state.engine.feature ?? "—"}${
-                      state.engine.runId ? ` :: ${state.engine.runId}` : ""
-                    }`
-                  : "—"}
-              </div>
+              <RunsBoard runs={state.runs} engine={state.engine} />
             </div>
 
             <div className="bg-[#0A0A0A] p-4">

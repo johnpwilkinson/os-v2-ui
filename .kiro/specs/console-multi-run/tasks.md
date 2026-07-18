@@ -22,7 +22,7 @@
   _Depends: 2.1_
 
 - [ ] 3. Panel integration
-- [ ] 3.1 In src/components/console-panel/console-panel.tsx replace the [ ENGINE ] cell block with <RunsBoard runs={state.runs} engine={state.engine} /> inside the same grid cell div; import RunsBoard from @/components/console-panel/runs-board; no other JSX or class changes in the file
+- [x] 3.1 In src/components/console-panel/console-panel.tsx replace the [ ENGINE ] cell block with <RunsBoard runs={state.runs} engine={state.engine} /> inside the same grid cell div; import RunsBoard from @/components/console-panel/runs-board; no other JSX or class changes in the file
   _Requirements: 2.1, 3.2_
   _Boundary: src/components/console-panel_
   _Depends: 2.1_
