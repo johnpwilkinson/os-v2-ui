@@ -16,7 +16,7 @@
   _Requirements: 2.1, 2.2, 2.3, 2.4, 3.1_
   _Boundary: src/components/console-panel_
   _Depends: 1.1_
-- [ ]* 2.2 Create src/components/console-panel/runs-board.test.tsx with tests named with [req:2.1] [req:2.2] [req:2.3] [req:2.4] [req:3.1]: two active rows both rendered with the glow class; an inactive row carries the dimmed class; ordering puts active rows first then alphabetical; empty runs with an engine prop renders text equal to the legacy ENGINE cell string for that engine
+- [x]* 2.2 Create src/components/console-panel/runs-board.test.tsx with tests named with [req:2.1] [req:2.2] [req:2.3] [req:2.4] [req:3.1]: two active rows both rendered with the glow class; an inactive row carries the dimmed class; ordering puts active rows first then alphabetical; empty runs with an engine prop renders text equal to the legacy ENGINE cell string for that engine
   _Requirements: 2.1, 2.2, 2.3, 2.4, 3.1_
   _Boundary: src/components/console-panel_
   _Depends: 2.1_
