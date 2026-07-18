@@ -5,8 +5,8 @@ Fast per-doc gate for a kiro requirements.md. Every rule below is derived from
 the REAL downstream parser; each failure names the rule AND the parser line it
 derives from. Parser paths are relative to OS_V2_ROOT (default ~/lab/agents):
 
-  CANON = os-v2/skills/kiro-validate-impl-turbo/src/core-requirements.js
-  PLAN  = os-v2/skills/kiro-validate-impl-turbo/src/plan.js
+  CANON = os-v2/plugins/os-core/skills/kiro-validate-impl-turbo/src/core-requirements.js
+  PLAN  = os-v2/plugins/os-core/skills/kiro-validate-impl-turbo/src/plan.js
 
 This script is fast feedback only. The plan CLIs run by dry_run.sh are the
 only authority; on any disagreement the CLI wins and this script gets fixed.
@@ -16,8 +16,8 @@ stdlib only. Exit 0 = pass, exit 1 = violations (printed), exit 2 = usage.
 import re
 import sys
 
-CANON = "os-v2/skills/kiro-validate-impl-turbo/src/core-requirements.js"
-PLAN = "os-v2/skills/kiro-validate-impl-turbo/src/plan.js"
+CANON = "os-v2/plugins/os-core/skills/kiro-validate-impl-turbo/src/core-requirements.js"
+PLAN = "os-v2/plugins/os-core/skills/kiro-validate-impl-turbo/src/plan.js"
 
 # Faithful ports of the canonical parser's regexes (CANON:7,10,11,12,13).
 REQ_RE = re.compile(r"^\s*(?:[-*]\s+)?(\d+\.\d+)\s+(.*\S)\s*$")

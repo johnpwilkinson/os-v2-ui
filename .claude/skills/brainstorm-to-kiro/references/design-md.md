@@ -1,5 +1,16 @@
 # design.md — contract
 
+> **Boundary table authored via schema (Wave E).** You author the design PROSE
+> directly (as before), but leave an EMPTY `## Boundary Commitments` heading:
+> the boundary ROWS are authored as `boundaries.json` against
+> `BOUNDARIES_CONTENT_SCHEMA` (`_kiro-core/spec-schemas.js`) and `node
+> scripts/render.mjs <slug> <client-repo-root>` renders them into that section
+> in place, parse-back-verified against the real deriver. `from`/`to`/`via` are
+> schema-required slash-paths, so a non-path-expressible commitment cannot enter
+> the table — doctrine prose and non-goals live OUTSIDE it (unchanged doctrine,
+> now mechanical). The Meaning-shape contract below stays the deriver ground
+> truth: read it, don't hand-type table rows.
+
 ## MISSION
 
 design.md is the intent document. Consumers, in order:

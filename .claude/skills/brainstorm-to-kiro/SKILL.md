@@ -75,12 +75,93 @@ If the slug's spec directory already exists with a COMPLETED/merged feature,
 stop and ask the operator — never overwrite a finished spec, and never re-seed
 a completed run.
 
-### 2. Author the four artifacts, gating each immediately
+### 2. Author the artifacts: JSON content in, rendered artifacts out
 
 Author order matters: design is the intent source for requirements, which is
-the id source for tasks. For EACH artifact: read its contract reference, study
-the golden example (`references/golden-example/` — a real merged feature;
-imitate its shape), write the file, run its check script, fix until exit 0.
+the id source for tasks. Wave E splits authoring into two channels — you author
+JSON CONTENT (WHAT the artifacts say); `scripts/render.mjs` owns the TYPOGRAPHY
+(what they LOOK like). **Never type checkbox/annotation/criterion/boundary-row
+lines freehand — the serializer owns all machine-parsed grammar now.** Freehand
+rendering is the proven source of the unparseable-checkbox / phantom-criterion /
+lesson-7-empty-boundary classes; the render CLI kills them at the source.
+
+**(a) Author the inputs.** For the three JSON files, read the `_kiro-core`
+schema quoted below (the source of truth is
+`os-v2/plugins/os-core/skills/_kiro-core/spec-schemas.js`), study the golden
+example (`references/golden-example/` — a real merged feature) for CONTENT
+density, and write to `.kiro/.turbo/authoring/<slug>/`. `design.md` and
+`spec.json` are still authored directly:
+
+- `design.md` — author the PROSE per `references/design-md.md`, including an
+  EMPTY `## Boundary Commitments` heading (the render fills that section from
+  `boundaries.json`; author nothing under it by hand). Everything else in the
+  design — architecture, non-goals, doctrine prose — lives OUTSIDE that table.
+- `.kiro/.turbo/authoring/<slug>/requirements.json` —
+  `REQUIREMENTS_CONTENT_SCHEMA`. Each `criteria[].text` MUST be EARS-shaped
+  (`^(WHEN|IF|WHILE|WHERE) … SHALL …`, one line). Prose channels (`title`,
+  `introduction`, `requirement.userStory`, `requirement.title`) MUST NOT contain
+  a dotted-id line (`1.3 …`), a markdown heading (`# …`), or a plain-numbered
+  list line (`1. …` / `2) …`) — all three are parser recovery paths that would
+  synthesize phantom criteria, so the serializer refuses them
+  (`serialize-requirements.js` `noPhantom`).
+- `.kiro/.turbo/authoring/<slug>/tasks.json` — `TASKS_CONTENT_SCHEMA`. Every
+  `requirements[]` dotted id MUST exist in `requirements.json` (render enforces
+  cross-artifact). `desc` is one line and MUST NOT open with `(P) `, `_`, or `[`
+  (use the `parallel`/`deferrableTest` booleans instead). `boundary[]` values
+  carry no commas (csv-split downstream).
+- `.kiro/.turbo/authoring/<slug>/boundaries.json` — `BOUNDARIES_CONTENT_SCHEMA`
+  (OPTIONAL — omit if the feature has no boundary rows). `from`/`to`/`via` are
+  schema-required slash-paths, so a non-path-expressible commitment cannot enter
+  the table (lesson-7 killed at the source); distinct `name`s must not slugify
+  identically (rule-identity collision → `insertRules` silently drops one).
+
+Worked JSON (trimmed from the `_kiro-core` serializers selftest — copy the
+shape, replace the content):
+
+```json
+// requirements.json
+{ "title": "Footer locale badge", "introduction": "Show the active locale.",
+  "requirements": [
+    { "major": "1", "title": "Rendering", "userStory": "As a user, I want the locale visible.",
+      "criteria": [
+        { "sub": "1", "text": "WHEN the footer mounts THE SYSTEM SHALL render the active locale code" },
+        { "sub": "2", "text": "IF no locale is set THE SYSTEM SHALL render the fallback literal" } ] } ] }
+```
+```json
+// tasks.json  (each requirements[] id must exist in requirements.json)
+{ "title": "Footer locale badge", "sections": [
+  { "major": "1", "title": "Component", "tasks": [
+    { "sub": "1", "desc": "Create src/components/badge.tsx rendering the locale; no store import",
+      "requirements": ["1.1", "1.2"], "boundary": ["src/components"] },
+    { "sub": "2", "desc": "Tests for badge named with [req:1.1] [req:1.2]", "deferrableTest": true,
+      "requirements": ["1.1", "1.2"], "boundary": ["src/components"], "depends": ["1.1"] } ] } ] }
+```
+```json
+// boundaries.json  (optional; from/to/via are slash-paths)
+{ "boundaries": [
+  { "name": "badge isolation", "kind": "must-not-import", "from": "src/components/badge", "to": "src/store" },
+  { "name": "service gate", "kind": "only-via", "from": "src/components/badge",
+    "to": "src/store/tags", "via": "src/service/tagService" },
+  { "name": "pure badge", "kind": "pure-leaf", "from": "src/components/label" } ] }
+```
+
+**(b) Render.** From the skill dir (mirroring the check-script call style):
+
+```
+node scripts/render.mjs <slug> <client-repo-root>
+```
+
+It validates each JSON against its schema, checks the cross-artifact requirement
+ids, renders through the deterministic serializers, parse-back-verifies each
+render against the REAL downstream parsers, and only THEN writes
+`.kiro/specs/<slug>/{tasks.md, requirements.md}` and replaces design.md's
+`## Boundary Commitments` section in place. Any refusal prints the full
+`RENDER RED:` defect list and exits 1 — **fix the JSON, never the rendered
+markdown.** `RENDER GREEN` + exit 0 means the bytes are parser-exact.
+
+**(c) Gate the rendered artifacts.** Run the per-doc check scripts on the
+rendered files (both gate layers are unchanged — now belt-and-suspenders), then
+continue to §3 (design-to-rules) and §4 (dry_run) exactly as before:
 
 | # | Artifact | Contract | Check (run from the skill dir) |
 |---|---|---|---|
@@ -93,14 +174,34 @@ Knowledge-packing bar (the reason this skill exists): design.md's Boundary
 Commitments carry every constraint and non-goal the brainstorm settled;
 tasks.md descriptions travel VERBATIM to implementer agents and must be
 executable by a model with zero conversation context. When in doubt, write the
-extra sentence into the task description — that channel is cheap here and
-priceless downstream.
+extra sentence into the task `desc` — that channel is cheap here and priceless
+downstream.
 
-spec.json's three `approved: true` booleans record the operator's spec-gate
+`spec.json` stays DIRECTLY authored (it is already JSON; `check_spec_json.py`
+gates it). Its three `approved: true` booleans record the operator's spec-gate
 approval that invoked this skill. If that approval was partial or conditional,
 resolve it with the operator before writing them.
 
-### 3. Authoritative dry run — loop until green
+### 3. Fifth artifact: derive the sdd boundary rules
+
+The enforce rung promotes `sdd-<slug>-*` depcruise rules warn→error; forge
+derives them in the diet flow, but THIS flow bypasses forge — derive them now
+or the build is guaranteed to halt at enforce (drill lesson 6).
+
+1. `node "$OS_V2_ROOT/os-v2/plugins/os-core/skills/kiro-design-to-rules-turbo/src/plan.js" <slug> --root .`
+   — REFUSES if the design is unapproved or any boundary row is not
+   path-expressible (fix design.md, never the CLI).
+2. Splice the derived warn-severity cjs verbatim:
+   `node -e 'const fs=require("fs");const p=JSON.parse(fs.readFileSync(".kiro/.turbo/<slug>.design-to-rules.plan.json","utf8"));if(p.cjsWarn==null)process.exit(0);fs.writeFileSync(p.cjsPath,p.cjsWarn)'`
+3. Validate with the effector's OWN tool (never a homegrown regex):
+   `./node_modules/.bin/depcruise src` must stay green (rules are warn).
+4. Do NOT commit `.dependency-cruiser.cjs` here — the `design/<slug>` branch does
+   not exist yet (it is created at the landing step, §5), so a commit now would
+   land the cjs on the default branch. Leave the spliced cjs in the working tree;
+   `dry_run.sh` reads it there, and it is committed at the landing step alongside
+   the artifacts.
+
+### 4. Authoritative dry run — loop until green
 
 ```
 OS_V2_ROOT=<agents-repo> bash scripts/dry_run.sh <slug> <client-repo-root>
@@ -111,18 +212,19 @@ defect), fix the ARTIFACT, re-run the artifact's check script, re-run
 `dry_run.sh`. Loop author → check → fix until green. Do not proceed, and do
 not weaken any gate, while RED.
 
-### 4. Land on the design branch
+### 5. Land on the design branch
 
 Only after DRY RUN GREEN:
 
 1. From the repo's default branch (up to date with origin), create
    `design/<slug>`.
-2. Commit exactly the four artifact files (plus `.gitignore` if you added
+2. Commit exactly five files — the four artifact files plus the spliced
+   `.dependency-cruiser.cjs` from §3 (plus `.gitignore` if you added
    `.kiro/.turbo/`). Conventional Commit subject, e.g.
    `feat: add <slug> kiro spec`. Never commit `.kiro/.turbo/` contents.
 3. Push: `git push -u origin design/<slug>`.
 
-### 5. Print the operator's next steps
+### 6. Print the operator's next steps
 
 The engine builds the spec COMMITTED ON THE INTEGRATION BRANCH — a spec that
 only lives on `design/<slug>` is invisible to it

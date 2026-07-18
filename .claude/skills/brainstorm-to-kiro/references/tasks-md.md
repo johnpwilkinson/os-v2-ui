@@ -1,5 +1,23 @@
 # tasks.md — contract
 
+## AUTHORED VIA SCHEMA (Wave E)
+
+You no longer type tasks.md by hand. Author `tasks.json` content against
+`TASKS_CONTENT_SCHEMA` (`_kiro-core/spec-schemas.js`) under
+`.kiro/.turbo/authoring/<slug>/`, then run `node scripts/render.mjs <slug>
+<client-repo-root>` — `serialize-tasks.js` emits the checkbox/annotation
+grammar byte-exact and parse-back-verifies it against `parseTasks` before
+writing. The freehand copy-paste template is retired: freehand rendering was
+the proven source of the T1 unparseable-checkbox class (indent drift, `-[ ]`,
+uppercase X, missing spaces), and the serializer now owns all of it. The
+JSON `desc`/`requirements`/`boundary`/`depends` fields carry the content; the
+`parallel` and `deferrableTest` booleans replace the `(P) ` prefix and `*`
+marker. See SKILL.md §2 for the worked JSON example.
+
+The grammar below remains the parser ground truth — it documents exactly what
+the serializer must emit and the check script must accept. Read it to
+understand the contract; do not hand-type against it.
+
 ## MISSION
 
 tasks.md is the execution program AND the highest-bandwidth knowledge channel.
