@@ -1,4 +1,4 @@
-import type { ConsoleDecision, ConsoleEngine, ConsoleRepo, ConsoleState } from "./types";
+import type { ConsoleDecision, ConsoleEngine, ConsoleRepo, ConsoleRun, ConsoleState } from "./types";
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -51,6 +51,29 @@ function parseEngine(raw: unknown): ConsoleEngine | null {
   };
 }
 
+function parseRun(raw: unknown): ConsoleRun | null {
+  if (!isPlainObject(raw)) return null;
+  return {
+    active: Boolean(raw.active),
+    phase: typeof raw.phase === "string" ? raw.phase : null,
+    feature: typeof raw.feature === "string" ? raw.feature : null,
+    runId: typeof raw.runId === "string" ? raw.runId : null,
+  };
+}
+
+function parseRuns(raw: unknown): Record<string, ConsoleRun> {
+  if (!isPlainObject(raw)) return {};
+
+  const runs: Record<string, ConsoleRun> = {};
+  for (const [alias, value] of Object.entries(raw)) {
+    const run = parseRun(value);
+    if (run !== null) {
+      runs[alias] = run;
+    }
+  }
+  return runs;
+}
+
 export function parseConsoleState(raw: unknown): ConsoleState | null {
   if (!isPlainObject(raw)) return null;
   if (typeof raw.ts !== "string") return null;
@@ -74,5 +97,6 @@ export function parseConsoleState(raw: unknown): ConsoleState | null {
     decisions,
     watchQueueDepth: Number(raw.watchQueueDepth) || 0,
     repos,
+    runs: parseRuns(raw.runs),
   };
 }

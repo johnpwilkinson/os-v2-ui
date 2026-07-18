@@ -24,6 +24,13 @@ export interface ConsoleEngine {
   runId: string | null;
 }
 
+export interface ConsoleRun {
+  active: boolean;
+  phase: string | null;
+  feature: string | null;
+  runId: string | null;
+}
+
 export interface ConsoleState {
   ts: string;
   engine: ConsoleEngine | null;
@@ -31,4 +38,5 @@ export interface ConsoleState {
   decisions: ConsoleDecision[];
   watchQueueDepth: number;
   repos: Record<string, ConsoleRepo>;
+  runs: Record<string, ConsoleRun>;
 }
