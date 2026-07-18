@@ -2,7 +2,13 @@ import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
-import { FIXTURE_STATE_ACTIVE, FIXTURE_STATE_IDLE } from "@/lib/console/fixtures";
+import {
+  FIXTURE_RAW_LEGACY_NO_RUNS,
+  FIXTURE_STATE_ACTIVE,
+  FIXTURE_STATE_IDLE,
+  FIXTURE_STATE_MULTI_RUN,
+} from "@/lib/console/fixtures";
+import { parseConsoleState } from "@/lib/console/parse";
 
 const { stateQuerySpy } = vi.hoisted(() => ({
   stateQuerySpy: vi.fn(),
@@ -103,5 +109,35 @@ describe("ConsolePanel", () => {
     render(<ConsolePanel />);
 
     expect(screen.getByText(FIXTURE_STATE_ACTIVE.decisions[0].recommendation)).toBeInTheDocument();
+  });
+
+  it("renders both repo rows when the two-active runs fixture drives the shell [req:2.2]", () => {
+    stateQuerySpy.mockReturnValue({ data: { ok: true, state: FIXTURE_STATE_MULTI_RUN } });
+
+    render(<ConsolePanel />);
+
+    const { sim, ui } = FIXTURE_STATE_MULTI_RUN.runs;
+    expect(
+      screen.getByText(`SIM :: ${sim.phase!.toUpperCase()} :: ${sim.feature} :: ${sim.runId}`),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(`UI :: ${ui.phase!.toUpperCase()} :: ${ui.feature} :: ${ui.runId}`),
+    ).toBeInTheDocument();
+  });
+
+  it("renders the same engine summary text the pre-feature panel produced when the bridge response omits the runs field entirely [req:3.2]", () => {
+    const state = parseConsoleState(FIXTURE_RAW_LEGACY_NO_RUNS);
+    stateQuerySpy.mockReturnValue({ data: { ok: true, state } });
+
+    render(<ConsolePanel />);
+
+    const { engine } = state!;
+    const legacyEngineCellText = engine
+      ? `${(engine.phase ?? "—").toUpperCase()} :: ${engine.repo ?? "—"}/${engine.feature ?? "—"}${
+          engine.runId ? ` :: ${engine.runId}` : ""
+        }`
+      : "—";
+
+    expect(screen.getByText(legacyEngineCellText)).toBeInTheDocument();
   });
 });

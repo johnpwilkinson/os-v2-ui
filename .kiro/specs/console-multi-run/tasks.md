@@ -26,7 +26,7 @@
   _Requirements: 2.1, 3.2_
   _Boundary: src/components/console-panel_
   _Depends: 2.1_
-- [ ]* 3.2 In src/components/console-panel/console-panel.test.tsx add tests named with [req:2.2] [req:3.2]: driving the two-active fixture through the shell renders both repo rows; driving the legacy runs-absent fixture renders the same engine summary text the pre-feature panel produced for that state
+- [x]* 3.2 In src/components/console-panel/console-panel.test.tsx add tests named with [req:2.2] [req:3.2]: driving the two-active fixture through the shell renders both repo rows; driving the legacy runs-absent fixture renders the same engine summary text the pre-feature panel produced for that state
   _Requirements: 2.2, 3.2_
   _Boundary: src/components/console-panel_
   _Depends: 3.1_
