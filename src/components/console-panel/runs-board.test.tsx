@@ -66,6 +66,24 @@ describe("RunsBoard", () => {
     ]);
   });
 
+  it("renders every row dimmed and omits the legacy engine summary when a non-empty runs map has no active entries [req:2.3] [req:3.1]", () => {
+    const runs: Record<string, ConsoleRun> = {
+      sim: { active: false, phase: "idle", feature: "console-multi-run", runId: null },
+      ui: { active: false, phase: "idle", feature: "runs-board", runId: null },
+    };
+    const { engine } = FIXTURE_STATE_ACTIVE;
+
+    render(<RunsBoard runs={runs} engine={engine} />);
+
+    expect(screen.getByText("SIM :: IDLE :: console-multi-run")).toHaveClass(INACTIVE_TEXT_CLASS);
+    expect(screen.getByText("UI :: IDLE :: runs-board")).toHaveClass(INACTIVE_TEXT_CLASS);
+
+    const legacyEngineCellText = `${(engine!.phase ?? "—").toUpperCase()} :: ${engine!.repo ?? "—"}/${
+      engine!.feature ?? "—"
+    }${engine!.runId ? ` :: ${engine!.runId}` : ""}`;
+    expect(screen.queryByText(legacyEngineCellText)).not.toBeInTheDocument();
+  });
+
   it("renders the legacy engine summary line when the parsed runs map is empty [req:3.1]", () => {
     const { engine } = FIXTURE_STATE_ACTIVE;
 

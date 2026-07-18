@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
 import {
-  FIXTURE_RAW_LEGACY_NO_RUNS,
+  FIXTURE_RAW_LEGACY_ACTIVE_NO_RUNS,
   FIXTURE_STATE_ACTIVE,
   FIXTURE_STATE_IDLE,
   FIXTURE_STATE_MULTI_RUN,
@@ -126,18 +126,11 @@ describe("ConsolePanel", () => {
   });
 
   it("renders the same engine summary text the pre-feature panel produced when the bridge response omits the runs field entirely [req:3.2]", () => {
-    const state = parseConsoleState(FIXTURE_RAW_LEGACY_NO_RUNS);
+    const state = parseConsoleState(FIXTURE_RAW_LEGACY_ACTIVE_NO_RUNS);
     stateQuerySpy.mockReturnValue({ data: { ok: true, state } });
 
     render(<ConsolePanel />);
 
-    const { engine } = state!;
-    const legacyEngineCellText = engine
-      ? `${(engine.phase ?? "—").toUpperCase()} :: ${engine.repo ?? "—"}/${engine.feature ?? "—"}${
-          engine.runId ? ` :: ${engine.runId}` : ""
-        }`
-      : "—";
-
-    expect(screen.getByText(legacyEngineCellText)).toBeInTheDocument();
+    expect(screen.getByText("PLANNING :: os-v2-ui/console-state-panel :: run-42")).toBeInTheDocument();
   });
 });
