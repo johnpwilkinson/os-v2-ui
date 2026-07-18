@@ -1,8 +1,14 @@
 import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { FIXTURE_STATE_ACTIVE } from "@/lib/console/fixtures";
+import { fetchConsoleState } from "./console";
 import { appRouter } from "./api";
+
+vi.mock("./console", () => ({
+  fetchConsoleState: vi.fn(),
+}));
 
 let tmpRoot: string;
 let previousArtifactsDir: string | undefined;
@@ -55,5 +61,37 @@ describe("appRouter.runs.get", () => {
 
     expect(result.ok).toBe(false);
     expect(result.repoUrl).toBe("https://github.com/acme/fallback");
+  });
+});
+
+describe("appRouter.console.state", () => {
+  test("passes through a bridge fetch failure [req:1.3]", async () => {
+    vi.mocked(fetchConsoleState).mockResolvedValue({
+      ok: false,
+      error: "bridge unreachable: timeout",
+    });
+
+    const caller = appRouter.createCaller({});
+    const result = await caller.console.state();
+
+    expect(result).toEqual({ ok: false, error: "bridge unreachable: timeout" });
+  });
+
+  test("rejects a malformed payload with 'malformed console state' [req:1.4]", async () => {
+    vi.mocked(fetchConsoleState).mockResolvedValue({ ok: true, raw: { not: "valid" } });
+
+    const caller = appRouter.createCaller({});
+    const result = await caller.console.state();
+
+    expect(result).toEqual({ ok: false, error: "malformed console state" });
+  });
+
+  test("resolves the parsed state on a well-formed payload [req:1.4]", async () => {
+    vi.mocked(fetchConsoleState).mockResolvedValue({ ok: true, raw: FIXTURE_STATE_ACTIVE });
+
+    const caller = appRouter.createCaller({});
+    const result = await caller.console.state();
+
+    expect(result).toEqual({ ok: true, state: FIXTURE_STATE_ACTIVE });
   });
 });
