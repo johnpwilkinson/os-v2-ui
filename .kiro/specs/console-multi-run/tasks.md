@@ -12,7 +12,7 @@
   _Depends: 1.1_
 
 - [ ] 2. Runs board component
-- [ ] 2.1 Create src/components/console-panel/runs-board.tsx: pure presentational RunsBoard({ runs, engine }) with no trpc import and no data fetching; sort Object.entries(runs) by Number(b.active)-Number(a.active) then aliasA.localeCompare(aliasB); empty runs renders the legacy line exactly as console-panel.tsx's current ENGINE cell text (engine ? phase-uppercased :: repo/feature :: runId : em-dash); non-empty renders one row per alias formatted ALIAS :: PHASE :: feature :: runId with active rows using class text-sm [text-shadow:0_0_6px_rgba(234,234,234,0.22)] and inactive rows text-sm text-[#EAEAEA]/40; cell micro-label is [ RUNS ] using the existing micro-label class string
+- [x] 2.1 Create src/components/console-panel/runs-board.tsx: pure presentational RunsBoard({ runs, engine }) with no trpc import and no data fetching; sort Object.entries(runs) by Number(b.active)-Number(a.active) then aliasA.localeCompare(aliasB); empty runs renders the legacy line exactly as console-panel.tsx's current ENGINE cell text (engine ? phase-uppercased :: repo/feature :: runId : em-dash); non-empty renders one row per alias formatted ALIAS :: PHASE :: feature :: runId with active rows using class text-sm [text-shadow:0_0_6px_rgba(234,234,234,0.22)] and inactive rows text-sm text-[#EAEAEA]/40; cell micro-label is [ RUNS ] using the existing micro-label class string
   _Requirements: 2.1, 2.2, 2.3, 2.4, 3.1_
   _Boundary: src/components/console-panel_
   _Depends: 1.1_
