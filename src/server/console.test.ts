@@ -53,7 +53,7 @@ describe("fetchConsoleState", () => {
   });
 
   test("calls the fake fetch with the /console/state URL and X-Chamber-Bridge header set to 1 against the default bridge URL [req:1.1] [req:1.2] [req:4.1]", async () => {
-    const fakeFetch = vi.fn(async () => jsonResponse({}));
+    const fakeFetch = vi.fn<typeof fetch>(async () => jsonResponse({}));
 
     await fetchConsoleState(fakeFetch as unknown as typeof fetch);
 
@@ -65,7 +65,7 @@ describe("fetchConsoleState", () => {
 
   test("uses CHAMBER_BRIDGE_URL as the bridge base URL when set [req:1.2] [req:4.1]", async () => {
     process.env.CHAMBER_BRIDGE_URL = "http://example.internal:9000";
-    const fakeFetch = vi.fn(async () => jsonResponse({}));
+    const fakeFetch = vi.fn<typeof fetch>(async () => jsonResponse({}));
 
     await fetchConsoleState(fakeFetch as unknown as typeof fetch);
 

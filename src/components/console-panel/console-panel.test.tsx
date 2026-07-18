@@ -68,6 +68,18 @@ describe("ConsolePanel", () => {
     expect(banner.textContent).toContain("network down");
   });
 
+  it("hides the live panel and shows only the LINK DOWN banner when a refetch errors over stale ok data [req:2.4] [req:3.3]", () => {
+    stateQuerySpy.mockReturnValue({
+      data: { ok: true, state: FIXTURE_STATE_ACTIVE },
+      error: new Error("network down"),
+    });
+
+    render(<ConsolePanel />);
+
+    expect(screen.getByText(/LINK DOWN/)).toBeInTheDocument();
+    expect(screen.queryByText("[ OPTIMAL NEXT ]")).not.toBeInTheDocument();
+  });
+
   it("refetches the console state every five seconds [req:2.5]", () => {
     stateQuerySpy.mockReturnValue({ data: { ok: true, state: FIXTURE_STATE_IDLE } });
 

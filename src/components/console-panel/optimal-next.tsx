@@ -1,13 +1,8 @@
 interface OptimalNextProps {
   directive: string;
-  linkUp: boolean;
 }
 
-export function OptimalNext({ directive, linkUp }: OptimalNextProps) {
-  const dotClasses = linkUp
-    ? "inline-block size-2 bg-[#4AF626] shadow-[0_0_6px_#4AF626]"
-    : "inline-block size-2 bg-[#E61919] shadow-[0_0_6px_#E61919]";
-
+export function OptimalNext({ directive }: OptimalNextProps) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
@@ -18,7 +13,7 @@ export function OptimalNext({ directive, linkUp }: OptimalNextProps) {
           <span className="text-[11px] uppercase tracking-[0.08em] text-[#EAEAEA]/60">
             LINK
           </span>
-          <span className={dotClasses} />
+          <span className="inline-block size-2 bg-[#4AF626] shadow-[0_0_6px_#4AF626]" />
         </span>
       </div>
       <div className="text-base [text-shadow:0_0_6px_rgba(234,234,234,0.22)]">

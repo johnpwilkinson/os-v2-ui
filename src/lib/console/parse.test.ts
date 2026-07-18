@@ -43,6 +43,18 @@ describe("parseConsoleState", () => {
     expect(result?.decisions).toEqual([validDecision]);
   });
 
+  test("parses a non-object engine field as null [req:1.4]", () => {
+    const raw = { ...FIXTURE_STATE_ACTIVE, engine: undefined };
+    const result = parseConsoleState(raw);
+    expect(result?.engine).toBeNull();
+  });
+
+  test("coerces a non-numeric watchQueueDepth to 0 [req:1.4]", () => {
+    const raw = { ...FIXTURE_STATE_ACTIVE, watchQueueDepth: "not-a-number" };
+    const result = parseConsoleState(raw);
+    expect(result?.watchQueueDepth).toBe(0);
+  });
+
   test("tolerates both watch and watched spellings on repo entries [req:1.5]", () => {
     const raw = {
       ...FIXTURE_STATE_ACTIVE,

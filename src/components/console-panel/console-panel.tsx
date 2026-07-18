@@ -41,7 +41,7 @@ function ConsolePanelShell() {
     : data && !data.ok
       ? data.error
       : null;
-  const state = data && data.ok ? data.state : null;
+  const state = linkDown ? null : data && data.ok ? data.state : null;
 
   return (
     <div className="relative min-h-[100dvh] bg-[#0A0A0A] text-[#EAEAEA] font-mono">
@@ -67,7 +67,7 @@ function ConsolePanelShell() {
         {state ? (
           <div className="mt-6 grid gap-px bg-[#EAEAEA]/20 md:grid-cols-2">
             <div className="bg-[#0A0A0A] p-4">
-              <OptimalNext directive={state.optimalNext} linkUp />
+              <OptimalNext directive={state.optimalNext} />
             </div>
 
             <div className="bg-[#0A0A0A] p-4">
