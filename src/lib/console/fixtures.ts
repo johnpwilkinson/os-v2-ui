@@ -1,4 +1,4 @@
-import type { ConsoleState } from "./types";
+import type { ConsoleRun, ConsoleState } from "./types";
 
 export const FIXTURE_STATE_ACTIVE: ConsoleState = {
   ts: "2026-07-17T12:00:00.000Z",
@@ -39,6 +39,9 @@ export const FIXTURE_STATE_ACTIVE: ConsoleState = {
     "os-v2-ui": { class: "primary", watched: true, driver: true },
     "chamber-bridge": { class: "support", watched: true, driver: false },
   },
+  runs: {
+    "os-v2-ui": { active: true, phase: "planning", feature: "console-state-panel", runId: "run-42" },
+  },
 };
 
 export const FIXTURE_STATE_IDLE: ConsoleState = {
@@ -50,6 +53,29 @@ export const FIXTURE_STATE_IDLE: ConsoleState = {
   repos: {
     "os-v2-ui": { class: "primary", watched: true, driver: false },
   },
+  runs: {},
+};
+
+export const FIXTURE_STATE_MULTI_RUN: ConsoleState = {
+  ts: "2026-07-17T12:00:00.000Z",
+  engine: {
+    active: true,
+    phase: "planning",
+    repo: "os-v2-ui",
+    feature: "console-state-panel",
+    runId: "run-42",
+  },
+  optimalNext: "Ship the console multi-run board",
+  decisions: [],
+  watchQueueDepth: 0,
+  repos: {
+    "os-v2-ui": { class: "primary", watched: true, driver: true },
+    "chamber-bridge": { class: "support", watched: true, driver: false },
+  },
+  runs: {
+    sim: { active: true, phase: "planning", feature: "console-multi-run", runId: "run-42" },
+    ui: { active: true, phase: "review", feature: "runs-board", runId: "run-43" },
+  } satisfies Record<string, ConsoleRun>,
 };
 
 export const FIXTURE_RAW_MALFORMED: unknown = {
@@ -57,4 +83,32 @@ export const FIXTURE_RAW_MALFORMED: unknown = {
   optimalNext: "Idle",
   decisions: "not-an-array",
   repos: {},
+};
+
+export const FIXTURE_RAW_LEGACY_NO_RUNS: unknown = {
+  ts: "2026-07-17T12:00:00.000Z",
+  engine: null,
+  optimalNext: "Idle — no pending work",
+  decisions: [],
+  watchQueueDepth: 0,
+  repos: {
+    "os-v2-ui": { class: "primary", watched: true, driver: false },
+  },
+};
+
+export const FIXTURE_RAW_LEGACY_ACTIVE_NO_RUNS: unknown = {
+  ts: "2026-07-17T12:00:00.000Z",
+  engine: {
+    active: true,
+    phase: "planning",
+    repo: "os-v2-ui",
+    feature: "console-state-panel",
+    runId: "run-42",
+  },
+  optimalNext: "Ship the console state panel",
+  decisions: [],
+  watchQueueDepth: 0,
+  repos: {
+    "os-v2-ui": { class: "primary", watched: true, driver: true },
+  },
 };

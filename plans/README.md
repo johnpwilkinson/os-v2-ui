@@ -33,3 +33,6 @@ LOW findings are never executed; they are recorded as residual.
 | 905 | optimalnext-s-linkup-false-red-dot-branc | LOW | residual |
 | 906 | decisionrow-s-null-repo-feature-runid-an | LOW | residual |
 | 907 | engine-null-engine-panel-rendering-is-un | LOW | residual |
+| 019 | no-test-for-a-non-empty-runs-map-with-ze | MED | fixed(70fd98c) |
+| 901 | drop-redundant-panel-level-multi-run-row | LOW | residual |
+| 902 | parserun-s-field-default-branches-are-ne | LOW | residual |
