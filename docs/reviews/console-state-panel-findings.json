@@ -1,0 +1,47 @@
+{
+  "feature": "console-state-panel",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "src/server/console.test.ts",
+      "line": 61,
+      "issue": "vi.fn(async () => jsonResponse(...)) infers a zero-arg mock signature, so fakeFetch.mock.calls[0] types as an empty tuple `[]`; destructuring `const [url, init] = fakeFetch.mock.calls[0]` at lines 61 and 72, plus the `init as RequestInit` cast at line 63, fail `tsc --noEmit` even though vitest (esbuild, no type-checking) runs the file green. Not caught by the PR's own improve-turbo pass or its plans/015-018 ledger.",
+      "fix_hint": "Type the mock explicitly, e.g. `vi.fn(async (_url: string, _init?: RequestInit) => jsonResponse(raw))`, or type via `vi.fn<typeof fetch>(...)` so `.mock.calls[0]` resolves to `[string, RequestInit | undefined]`."
+    },
+    {
+      "severity": "med",
+      "file": "src/components/console-panel/console-panel.tsx",
+      "line": 207,
+      "issue": "linkDown (from queryError/data.ok) and state (from data.ok) are computed independently and rendered as two separate {cond ? : null} JSX blocks rather than mutually exclusive branches. After one successful poll followed by one failed 5s refetch, TanStack Query v5 retains stale data while setting error, so linkDown is true AND state is truthy simultaneously — both the red LINK DOWN banner and the full (now-frozen) live telemetry panel render at once, and OptimalNext's hardcoded linkUp=true means a green LINK dot renders alongside the red LINK DOWN dot in that same state, violating the 'exactly one green element when link is up' requirement (3.3) while the link is actually down. Already tracked as plans/015 (deferred, unfixed) but the OptimalNext/req-3.3 compounding effect is new.",
+      "fix_hint": "Make state and the banner mutually exclusive: `const state = linkDown ? null : data && data.ok ? data.state : null;`, or restructure as a single if/else-if/else over linkDown/state/idle."
+    },
+    {
+      "severity": "med",
+      "file": "src/components/console-panel/optimal-next.tsx",
+      "line": 2,
+      "issue": "OptimalNext's linkUp prop has no reachable false branch: the only call site (console-panel.tsx) passes the literal shorthand `linkUp` (always true) and is itself nested inside `state ? ... : null`, which is only reached when data.ok is true. The red-dot branch is dead code with no test exercising it. Tracked as plans/016 (deferred, unfixed).",
+      "fix_hint": "Either drop the linkUp prop and always render the green dot, or wire `linkUp={!linkDown}` from console-panel.tsx once the 015 fix makes linkDown/state mutually exclusive — needed together since both bugs interact (see console-panel.tsx finding above)."
+    },
+    {
+      "severity": "med",
+      "file": "src/server/api.ts",
+      "line": 26,
+      "issue": "The new console.state tRPC procedure (fetchConsoleState + parseConsoleState composition, with three distinct outcomes: fetch failure passthrough, malformed-payload rejection, success) has zero test coverage. src/server/api.test.ts is untouched and only covers appRouter.runs.get; src/server/console.test.ts only tests fetchConsoleState in isolation. A regression in the composition (e.g. swapped !res.ok check, dropped res.error, or a typo in 'malformed console state') would ship with a fully green suite. Tracked as plans/017 (deferred, unfixed).",
+      "fix_hint": "Add a describe block calling appRouter.createCaller({}).console.state() with @/server/console mocked via vi.mock, asserting all three outcomes: fetch failure passthrough, parse-null -> 'malformed console state', and success -> {ok:true,state}."
+    },
+    {
+      "severity": "med",
+      "file": "src/lib/console/parse.test.ts",
+      "line": 1,
+      "issue": "parseEngine's non-object branch (raw.engine not a plain object -> null) and the watchQueueDepth `Number(...) || 0` coercion are never exercised through parseConsoleState in this file — only FIXTURE_STATE_ACTIVE (populated engine, valid number) and FIXTURE_RAW_MALFORMED are used. Tracked as plans/018 (deferred, unfixed).",
+      "fix_hint": "Add a test asserting parseConsoleState({...FIXTURE_STATE_ACTIVE, engine: undefined}).engine === null, and one asserting parseConsoleState({...FIXTURE_STATE_ACTIVE, watchQueueDepth: 'not-a-number'}).watchQueueDepth === 0."
+    },
+    {
+      "severity": "low",
+      "file": "src/components/console-panel/decision-row.tsx",
+      "line": 1,
+      "issue": "fmtDuration does not guard against NaN: if a bridge-supplied ts/expiresAt is not a valid ISO string, Date.parse returns NaN and the row renders 'AGE NaN:NaN:NaN'. Already triaged and recorded as residual/LOW in plans/README.md (#904) per this project's policy of never executing LOW findings.",
+      "fix_hint": "No action required beyond what's already tracked; optionally clamp/guard fmtDuration's input for defense in depth in a future pass."
+    }
+  ]
+}
