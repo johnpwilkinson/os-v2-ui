@@ -1,0 +1,50 @@
+{
+  "integration_branch": "dev-engine/integration",
+  "queue": [
+    "drill-orbstack-ui"
+  ],
+  "caps": {
+    "perSpecTokens": 1000000,
+    "globalTokens": null,
+    "maxReviewRounds": 3,
+    "maxMedRounds": 2,
+    "maxValidateRounds": 3,
+    "maxFixRounds": 2,
+    "maxPlanRetries": 1,
+    "improveRounds": 1
+  },
+  "specs": {
+    "drill-orbstack-ui": {
+      "status": "validating",
+      "review_phase": "awaiting_review",
+      "validate_phase": "awaiting_validate",
+      "pr_number": null,
+      "base_sha": "4381d493790caf4faa77b7d3bf86c760764164c5",
+      "review_rounds": 0,
+      "med_rounds": 0,
+      "validate_rounds": 0,
+      "tokens": 0,
+      "tokens_cumulative": 1383,
+      "residual_findings": [],
+      "halt_reason": "runway drill: one-shot halt before validate (consume-once via restored halt_kind)",
+      "halted": true,
+      "halt_kind": "drill",
+      "fix_rounds": 0,
+      "plans": {},
+      "pending_plans": [],
+      "stage_tokens": {
+        "impl": 1383
+      },
+      "token_zero_point": 0,
+      "driver_metrics": {
+        "impl": {
+          "execCount": 2,
+          "llmHops": 1,
+          "turboRuns": 0
+        }
+      }
+    }
+  },
+  "global_tokens_cumulative": 1383,
+  "run_id": null
+}
