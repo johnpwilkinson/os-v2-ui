@@ -2,7 +2,12 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
 import { parseConsoleState } from "./parse";
-import { FIXTURE_RAW_MALFORMED, FIXTURE_STATE_ACTIVE } from "./fixtures";
+import {
+  FIXTURE_RAW_LEGACY_NO_RUNS,
+  FIXTURE_RAW_MALFORMED,
+  FIXTURE_STATE_ACTIVE,
+  FIXTURE_STATE_MULTI_RUN,
+} from "./fixtures";
 
 describe("parseConsoleState", () => {
   test("round-trips a valid fixture field-for-field [req:1.4]", () => {
@@ -53,6 +58,44 @@ describe("parseConsoleState", () => {
     const raw = { ...FIXTURE_STATE_ACTIVE, watchQueueDepth: "not-a-number" };
     const result = parseConsoleState(raw);
     expect(result?.watchQueueDepth).toBe(0);
+  });
+
+  test("parses each runs entry into a ConsoleRun keyed by its repo alias [req:1.1]", () => {
+    const result = parseConsoleState(FIXTURE_STATE_MULTI_RUN);
+    expect(result).not.toBeNull();
+    expect(result?.runs).toEqual(FIXTURE_STATE_MULTI_RUN.runs);
+    expect(result?.runs.sim).toEqual({ active: true, phase: "planning", feature: "console-multi-run", runId: "run-42" });
+    expect(result?.runs.ui).toEqual({ active: true, phase: "review", feature: "runs-board", runId: "run-43" });
+  });
+
+  test("yields an empty runs map when the runs field is absent, while the rest of the state parses unchanged [req:1.2]", () => {
+    const result = parseConsoleState(FIXTURE_RAW_LEGACY_NO_RUNS);
+    expect(result).not.toBeNull();
+    expect(result?.runs).toEqual({});
+    expect(result?.optimalNext).toBe("Idle — no pending work");
+    expect(result?.repos).toEqual({ "os-v2-ui": { class: "primary", watched: true, driver: false } });
+  });
+
+  test("yields an empty runs map when the runs field is not a plain object [req:1.2]", () => {
+    const raw = { ...FIXTURE_STATE_ACTIVE, runs: "not-an-object" };
+    const result = parseConsoleState(raw);
+    expect(result).not.toBeNull();
+    expect(result?.runs).toEqual({});
+  });
+
+  test("drops an individually malformed runs entry while retaining every well-formed entry [req:1.3]", () => {
+    const raw = {
+      ...FIXTURE_STATE_ACTIVE,
+      runs: {
+        "os-v2-ui": { active: true, phase: "planning", feature: "console-state-panel", runId: "run-42" },
+        "chamber-bridge": "not-an-object",
+      },
+    };
+    const result = parseConsoleState(raw);
+    expect(result).not.toBeNull();
+    expect(result?.runs).toEqual({
+      "os-v2-ui": { active: true, phase: "planning", feature: "console-state-panel", runId: "run-42" },
+    });
   });
 
   test("tolerates both watch and watched spellings on repo entries [req:1.5]", () => {
