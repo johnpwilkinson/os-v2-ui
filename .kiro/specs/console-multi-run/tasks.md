@@ -6,7 +6,7 @@
 - [x] 1.1 In ONE change so the repo compiles at task end: in src/lib/console/types.ts add export interface ConsoleRun { active: boolean; phase: string | null; feature: string | null; runId: string | null } and add runs: Record<string, ConsoleRun> to ConsoleState; in the same task update every ConsoleState producer to satisfy the new field — in src/lib/console/parse.ts add parseRuns(raw: unknown): Record<string, ConsoleRun> returning {} for non-plain-object input and dropping non-plain-object entries (parse each entry with the same field tolerance as parseEngine: active Boolean, phase/feature/runId string-or-null) and wire runs: parseRuns(raw.runs) into parseConsoleState; in src/lib/console/fixtures.ts add runs to existing fixtures plus a fixture with sim and ui both active and a legacy fixture omitting the runs field; tsc --noEmit must be green over the whole repo when this task finalizes
   _Requirements: 1.1, 1.2, 1.3_
   _Boundary: src/lib/console_
-- [ ]* 1.2 In src/lib/console/parse.test.ts add tests named with [req:1.1] [req:1.2] [req:1.3]: two-active fixture parses both aliases with correct fields; runs-absent and runs-non-object inputs yield empty map with the rest of the state intact; a malformed entry among well-formed ones is dropped while others survive
+- [x]* 1.2 In src/lib/console/parse.test.ts add tests named with [req:1.1] [req:1.2] [req:1.3]: two-active fixture parses both aliases with correct fields; runs-absent and runs-non-object inputs yield empty map with the rest of the state intact; a malformed entry among well-formed ones is dropped while others survive
   _Requirements: 1.1, 1.2, 1.3_
   _Boundary: src/lib/console_
   _Depends: 1.1_
