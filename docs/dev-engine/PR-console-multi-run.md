@@ -2,6 +2,10 @@
 
 ## Commits
 
+70fd98c fix: address review findings
+d010185 docs: review findings for console-multi-run
+8aab0ee merge dev-engine/console-multi-run [dev-engine]
+49a847e docs(console-multi-run): PR surface [dev-engine]
 8b2b55b chore(console-multi-run): promote sdd-* boundary rules warn->error [dev-engine]
 524b9c2 docs(console-multi-run): improve plans round 1 [improve-turbo]
 4d2aac0 feat(console-multi-run): In src/components/console-panel/console-panel.test.tsx add tests named w
@@ -22,15 +26,15 @@ aefa717 feat(console-multi-run): In ONE change so the repo compiles at task end:
 |------|--------|
 | drop-redundant-panel-level-multi-run-row | residual |
 | parserun-s-field-default-branches-are-ne | residual |
-| no-test-for-a-non-empty-runs-map-with-ze | deferred |
+| no-test-for-a-non-empty-runs-map-with-ze | fixed(70fd98c) |
 
 ### Deferred pick-list
 
-- no-test-for-a-non-empty-runs-map-with-ze
+(none)
 
 ## Residual findings
 
-- [MED] No test for a non-empty runs map with zero active entries (src/components/console-panel/runs-board.test.tsx:1)
+(none — the MED finding was fixed in 70fd98c)
 
 ## Gate receipts
 
