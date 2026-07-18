@@ -67,14 +67,14 @@ module.exports = {
     {
       name: "sdd-console-multi-run-runs-board-presentational",
       comment: "sdd-derived from kiro design commitment \"runs board presentational\": `src/components/console-panel/runs-board` MUST NOT import `src/components/console-panel/trpc`",
-      severity: "warn",
+      severity: "error",
       from: { path: "^src/components/console-panel/runs-board" },
       to: { path: "^src/components/console-panel/trpc" },
     },
     {
       name: "sdd-console-multi-run-console-lib-isolation",
       comment: "sdd-derived from kiro design commitment \"console lib isolation\": `src/lib/console` MUST NOT import `src/components`",
-      severity: "warn",
+      severity: "error",
       from: { path: "^src/lib/console" },
       to: { path: "^src/components" },
     },
