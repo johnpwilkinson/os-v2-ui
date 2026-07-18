@@ -29,7 +29,7 @@ fi
 SLUG="$1"
 ROOT="${2:-.}"
 OS_V2_ROOT="${OS_V2_ROOT:-$HOME/lab/agents}"
-SKILLS="$OS_V2_ROOT/os-v2/skills"
+SKILLS="$OS_V2_ROOT/os-v2/plugins/os-core/skills"
 
 for d in kiro-validate-impl-turbo kiro-impl-turbo kiro-tasks-turbo; do
   if [ ! -f "$SKILLS/$d/src/plan.js" ]; then
@@ -68,6 +68,15 @@ run_leg() {
 run_leg "validate-impl-turbo plan" node "$SKILLS/kiro-validate-impl-turbo/src/plan.js" "$SLUG" --root "$ROOT"
 run_leg "impl-turbo plan"          node "$SKILLS/kiro-impl-turbo/src/plan.js" "$SLUG" --root "$ROOT"
 run_leg "tasks-turbo plan (spec.json gate)" node "$SKILLS/kiro-tasks-turbo/src/plan.js" "$SLUG" --root "$ROOT"
+
+# Leg 4 (Wave A lesson 6): a design with boundary rows MUST have derived
+# sdd-<slug>-* rules in the cjs, or the enforce rung halts fail-closed.
+if python3 "$(dirname "$0")/has_boundary_rows.py" "$ROOT/.kiro/specs/$SLUG/design.md"; then
+  if ! grep -q "sdd-$SLUG-" "$ROOT/.dependency-cruiser.cjs" 2>/dev/null; then
+    echo "dry_run: no sdd-$SLUG-* rules in .dependency-cruiser.cjs — run the fifth artifact step (design-to-rules) before landing" >&2
+    exit 1
+  fi
+fi
 
 if [ $overall -eq 0 ]; then
   echo "DRY RUN GREEN: all three plan CLIs accepted .kiro/specs/$SLUG"

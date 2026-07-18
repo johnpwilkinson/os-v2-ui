@@ -1,5 +1,15 @@
 # requirements.md — contract
 
+> **Authored via schema (Wave E).** You no longer type requirements.md by hand.
+> Author `requirements.json` against `REQUIREMENTS_CONTENT_SCHEMA`
+> (`_kiro-core/spec-schemas.js`) under `.kiro/.turbo/authoring/<slug>/`, then
+> `node scripts/render.mjs <slug> <client-repo-root>` renders the dotted-id EARS
+> grammar byte-exact and parse-back-verifies it against `parseRequirements`.
+> Criterion `text` must be EARS-shaped; prose channels (title, introduction,
+> userStory) must not contain dotted-id, markdown-heading, or plain-numbered
+> lines (all parser recovery paths — the serializer's `noPhantom` refuses them).
+> The contract below stays the parser ground truth: read it, don't hand-type it.
+
 ## MISSION
 
 requirements.md is the verification contract. Consumers:

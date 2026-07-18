@@ -5,9 +5,9 @@ Fast per-doc gate for a kiro tasks.md. Rules are ports of the REAL consumer
 grammar + the forge's authoring validator; paths relative to OS_V2_ROOT
 (default ~/lab/agents):
 
-  GRAM  = os-v2/skills/kiro-impl-turbo/src/core-tasks.js      (consumer grammar)
-  WAVE  = os-v2/skills/kiro-impl-turbo/src/core-waves.js      (wave scheduler)
-  VALID = os-v2/skills/kiro-tasks-turbo/src/contract.js       (validateTasksMd)
+  GRAM  = os-v2/plugins/os-core/skills/kiro-impl-turbo/src/core-tasks.js      (consumer grammar)
+  WAVE  = os-v2/plugins/os-core/skills/kiro-impl-turbo/src/core-waves.js      (wave scheduler)
+  VALID = os-v2/plugins/os-core/skills/kiro-tasks-turbo/src/contract.js       (validateTasksMd)
   ENG   = os-v2/plugins/os-core/skills/kiro-full-auto/dev-engine/contract.mjs
 
 If a requirements.md path is given (or a sibling requirements.md exists), every
@@ -28,9 +28,9 @@ import os
 import re
 import sys
 
-GRAM = "os-v2/skills/kiro-impl-turbo/src/core-tasks.js"
-WAVE = "os-v2/skills/kiro-impl-turbo/src/core-waves.js"
-VALID = "os-v2/skills/kiro-tasks-turbo/src/contract.js"
+GRAM = "os-v2/plugins/os-core/skills/kiro-impl-turbo/src/core-tasks.js"
+WAVE = "os-v2/plugins/os-core/skills/kiro-impl-turbo/src/core-waves.js"
+VALID = "os-v2/plugins/os-core/skills/kiro-tasks-turbo/src/contract.js"
 ENG = "os-v2/plugins/os-core/skills/kiro-full-auto/dev-engine/contract.mjs"
 
 # Faithful ports of the consumer grammar (GRAM:4,5,6).
@@ -136,7 +136,7 @@ def build_wave_plan(tasks, max_parallel=2):
 
 def parse_requirement_ids(md):
     """Primary dotted-id pass of the canonical requirements parser
-    (os-v2/skills/kiro-validate-impl-turbo/src/core-requirements.js:7,21-35)."""
+    (os-v2/plugins/os-core/skills/kiro-validate-impl-turbo/src/core-requirements.js:7,21-35)."""
     req_re = re.compile(r"^\s*(?:[-*]\s+)?(\d+\.\d+)\s+(.*\S)\s*$")
     ids = set()
     for line in md.split("\n"):

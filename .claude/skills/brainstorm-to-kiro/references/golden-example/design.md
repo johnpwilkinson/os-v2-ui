@@ -59,23 +59,71 @@ or offset.
 
 ## Boundary Commitments
 
+Every row below is an import edge the rules deriver
+(kiro-design-to-rules-turbo `deriveFromTo`) can compile into a depcruise
+forbidden rule: its Detail cell states `<module> MUST NOT import <module>`
+with both operands as `src/` paths. Constraints that are not import edges
+(behavior, markup, file-edit scope) live in the prose subsection below the
+table, not in it — a row the deriver cannot compile REFUSES the whole spec.
+
 | Commitment | Detail |
 |---|---|
-| `src/components/footer-locale-badge/` is exclusively this feature's | Nothing unrelated gets added there, and this feature adds nothing outside it except the integration/offset touches listed above. |
+| Standalone from version badge | `src/components/footer-locale-badge` MUST NOT import `src/components/footer-version-badge` — the locale badge renders independently; sibling badges never import each other. |
+| Standalone from env-mode badge | `src/components/footer-locale-badge` MUST NOT import `src/components/footer-env-mode-badge` — the env-mode badge is touched only for its offset (see File Structure), never imported. |
+| Standalone from commit badge | `src/components/footer-locale-badge` MUST NOT import `src/components/footer-commit-badge` — the commit badge is touched only for its offset (see File Structure), never imported. |
 | Declared deps | none — uses only `react` (already a dependency), the browser's built-in `navigator.language`, and Tailwind utility classes; no new npm package is added. |
-| No build-time plumbing | No `vite.config.ts` `define` entry, no new ambient type declaration in `src/vite-env.d.ts`. `navigator.language` is already typed by TypeScript's built-in DOM lib. |
-| Reuses existing pill styling verbatim | Same classes as the other footer badges: `rounded-full border border-[var(--border)] bg-[var(--code-bg)] px-2 py-0.5 text-xs text-[var(--text)]`. No new CSS custom properties, no distinct visual treatment. |
-| Raw text, explicitly lowercased | Renders `.toLowerCase()` of the resolved value (either `navigator.language` or the `"unknown"` fallback) with no label prefix (e.g. `en-us`, not `locale: en-us`). |
-| Static read, not reactive | `navigator.language` is read once during render/mount; no `languagechange` event listener, no state update after mount. |
-| Fallback on missing value | If `navigator.language` is falsy/undefined, the component renders the literal string `unknown` instead (still passed through `.toLowerCase()` for a single code path). |
-| Static, non-interactive | No `onClick`, no `<a>`/`<Link>`, no tooltip. Purely presentational markup. |
-| No `aria-hidden` | The locale text is a plain visible text node, reachable by screen readers like any other static text. |
-| Always rendered | No environment or feature-flag gating — the same markup renders in every build. |
-| No config surface | No props on `FooterLocaleBadge`, no new settings/context/store entry. |
-| One mount point | Rendered exactly once, from `src/App.tsx`, immediately before `FooterEnvModeBadge`. No other file mounts it. |
-| `title` attribute fixed | The text-carrying `<span>` carries `title="browser locale"` (static string, not derived). |
-| Bounded layout touch | The only allowed edit to `footer-env-mode-badge.tsx`/`.test.tsx` is the `right-20` → `right-36` offset (and its matching test assertion); the only allowed edit to `footer-commit-badge.tsx`/`.test.tsx` is the `right-44` → `right-56` offset (and its matching test assertion). No styling, text, or behavior change to either component beyond that. |
-| Test scope matches brainstorm | Unit tests cover render/text content against a single active `navigator.language` value (no multi-value locale mocking), plus exactly one dedicated test mocking `navigator.language` as undefined to cover the `"unknown"` fallback. |
+
+### Behavioral commitments (doctrine, not module boundaries)
+
+These constrain the badge's behavior, markup, and file-edit scope rather than
+import edges depcruise can enforce, so they are stated as prose, not as
+derivable table rows:
+
+- **`src/components/footer-locale-badge/` is exclusively this feature's** —
+  this feature owns `src/components/footer-locale-badge/` and adds nothing
+  outside it except the integration touches listed in File Structure
+  (`src/App.tsx`, `src/components/footer-env-mode-badge/`,
+  `src/components/footer-commit-badge/`). Nothing unrelated is added under it.
+- **No build-time plumbing** — no edit to `vite.config.ts` or
+  `src/vite-env.d.ts`: no `define` entry, no new ambient type declaration.
+  `navigator.language` is already typed by TypeScript's built-in DOM lib.
+- **One mount point** — mounted exactly once, from `src/App.tsx`, immediately
+  before `<FooterEnvModeBadge />`. No other file mounts it.
+- **Bounded layout touch** — the only allowed edit to
+  `src/components/footer-env-mode-badge/` is the `right-20` → `right-36`
+  offset (and its matching test assertion); the only allowed edit to
+  `src/components/footer-commit-badge/` is the `right-44` → `right-56` offset
+  (and its matching test assertion). No styling, text, or behavior change to
+  either module beyond that.
+- **Version badge untouched** — this feature does not edit
+  `src/components/footer-version-badge/`; the version badge's markup and its
+  `right-3` offset are out of scope (its import isolation is the first table
+  row).
+- **Reuses existing pill styling verbatim** — same classes as the other footer
+  badges: `rounded-full border border-[var(--border)] bg-[var(--code-bg)] px-2 py-0.5 text-xs text-[var(--text)]`.
+  No new CSS custom properties, no distinct visual treatment.
+- **Raw text, explicitly lowercased** — renders `.toLowerCase()` of the resolved
+  value (either `navigator.language` or the `"unknown"` fallback) with no label
+  prefix (e.g. `en-us`, not `locale: en-us`).
+- **Static read, not reactive** — `navigator.language` is read once during
+  render/mount; no `languagechange` event listener, no state update after mount.
+- **Fallback on missing value** — if `navigator.language` is falsy/undefined, the
+  component renders the literal string `unknown` instead (still passed through
+  `.toLowerCase()` for a single code path).
+- **Static, non-interactive** — no `onClick`, no `<a>`/`<Link>`, no tooltip.
+  Purely presentational markup.
+- **No `aria-hidden`** — the locale text is a plain visible text node, reachable
+  by screen readers like any other static text.
+- **Always rendered** — no environment or feature-flag gating; the same markup
+  renders in every build.
+- **No config surface** — no props on `FooterLocaleBadge`, no new
+  settings/context/store entry.
+- **`title` attribute fixed** — the text-carrying `<span>` carries
+  `title="browser locale"` (static string, not derived).
+- **Test scope matches brainstorm** — unit tests cover render/text content
+  against a single active `navigator.language` value (no multi-value locale
+  mocking), plus exactly one dedicated test mocking `navigator.language` as
+  undefined to cover the `"unknown"` fallback.
 
 ## Concrete Shape
 

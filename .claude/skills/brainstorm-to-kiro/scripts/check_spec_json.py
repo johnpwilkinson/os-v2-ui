@@ -4,7 +4,7 @@
 Fast per-doc gate for a kiro spec.json. Rules derive from the REAL downstream
 gates; paths relative to OS_V2_ROOT (default ~/lab/agents):
 
-  GATE = os-v2/skills/kiro-tasks-turbo/src/gate.js            (design approval)
+  GATE = os-v2/plugins/os-core/skills/kiro-tasks-turbo/src/gate.js            (design approval)
   ENG  = os-v2/plugins/os-core/skills/kiro-full-auto/dev-engine/contract.mjs
 
 This script is fast feedback only. The plan CLIs run by dry_run.sh are the
@@ -15,7 +15,7 @@ stdlib only. Exit 0 = pass, exit 1 = violations, exit 2 = usage.
 import json
 import sys
 
-GATE = "os-v2/skills/kiro-tasks-turbo/src/gate.js"
+GATE = "os-v2/plugins/os-core/skills/kiro-tasks-turbo/src/gate.js"
 ENG = "os-v2/plugins/os-core/skills/kiro-full-auto/dev-engine/contract.mjs"
 
 
