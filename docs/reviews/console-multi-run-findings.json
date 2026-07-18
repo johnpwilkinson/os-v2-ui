@@ -1,0 +1,19 @@
+{
+  "feature": "console-multi-run",
+  "findings": [
+    {
+      "severity": "med",
+      "file": "src/components/console-panel/runs-board.test.tsx",
+      "line": 1,
+      "issue": "No test covers a non-empty runs map where every entry is active:false; the legacy-fallback branch is keyed purely on entries.length === 0 (runs-board.tsx:21). Every existing non-empty-runs test includes at least one active entry.",
+      "fix_hint": "Add a test with 2+ all-inactive entries asserting dimmed rows render and legacy text is absent. Already tracked as plans/019 (MED) but left deferred/unfixed in this PR."
+    },
+    {
+      "severity": "low",
+      "file": "src/components/console-panel/console-panel.test.tsx",
+      "line": 128,
+      "issue": "The panel-level req:3.2 test uses an engine:null fixture, so the expected '—' output would pass even if RunsBoard were wired with the wrong props — it doesn't prove correct end-to-end wiring of a real engine object.",
+      "fix_hint": "Drive a non-null-engine, runs-absent fixture through the full ConsolePanel shell and assert the exact non-dash summary text."
+    }
+  ]
+}
