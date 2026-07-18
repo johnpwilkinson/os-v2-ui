@@ -191,11 +191,14 @@ or the build is guaranteed to halt at enforce (drill lesson 6).
 1. `node "$OS_V2_ROOT/os-v2/plugins/os-core/skills/kiro-design-to-rules-turbo/src/plan.js" <slug> --root .`
    — REFUSES if the design is unapproved or any boundary row is not
    path-expressible (fix design.md, never the CLI).
-2. Splice the derived warn-severity cjs verbatim:
+2. Verify main currency first: `git fetch origin && git status -sb` — if local
+   main is behind origin/main, STOP and fast-forward before splicing; a stale
+   splice produces an FF conflict at land time (live-hit 2026-07-17).
+3. Splice the derived warn-severity cjs verbatim:
    `node -e 'const fs=require("fs");const p=JSON.parse(fs.readFileSync(".kiro/.turbo/<slug>.design-to-rules.plan.json","utf8"));if(p.cjsWarn==null)process.exit(0);fs.writeFileSync(p.cjsPath,p.cjsWarn)'`
-3. Validate with the effector's OWN tool (never a homegrown regex):
+4. Validate with the effector's OWN tool (never a homegrown regex):
    `./node_modules/.bin/depcruise src` must stay green (rules are warn).
-4. Do NOT commit `.dependency-cruiser.cjs` here — the `design/<slug>` branch does
+5. Do NOT commit `.dependency-cruiser.cjs` here — the `design/<slug>` branch does
    not exist yet (it is created at the landing step, §5), so a commit now would
    land the cjs on the default branch. Leave the spliced cjs in the working tree;
    `dry_run.sh` reads it there, and it is committed at the landing step alongside
