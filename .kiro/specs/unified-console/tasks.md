@@ -99,13 +99,12 @@
   _Boundary: src/components/console-deck_
   _Depends: 10.1_
 
-- [ ] 11. Routes and consolidation
-- [ ] 11.1 In ONE change so the repo compiles at task end: create src/app/console/[[...runId]]/page.tsx (dynamic force-dynamic, awaits params, renders <ConsoleDeck runId={runId?.[0] ?? null} />) and delete src/app/console/page.tsx plus src/app/console/page.test.tsx; rewrite src/app/page.tsx to redirect("/console") and src/app/run/[runId]/page.tsx to await params then redirect("/console/" + runId) using next/navigation, updating src/app/page.test.tsx and src/app/run/[runId]/page.test.tsx to assert the redirects; delete the src/components/run-view and src/components/console-panel directories entirely including their tests and the merged runs-board.tsx (the filmstrip supersedes it); repo-wide grep confirms zero remaining imports of run-view or console-panel and tsc --noEmit plus the full vitest suite are green when this task finalizes.
-  _Blocked: verify-completion: NOT_VERIFIED_
+- [x] 11. Routes and consolidation
+- [x] 11.1 In ONE change so the repo compiles at task end: create src/app/console/[[...runId]]/page.tsx (dynamic force-dynamic, awaits params, renders <ConsoleDeck runId={runId?.[0] ?? null} />) and delete src/app/console/page.tsx plus src/app/console/page.test.tsx; rewrite src/app/page.tsx to redirect("/console") and src/app/run/[runId]/page.tsx to await params then redirect("/console/" + runId) using next/navigation, updating src/app/page.test.tsx and src/app/run/[runId]/page.test.tsx to assert the redirects; delete the src/components/run-view and src/components/console-panel directories entirely including their tests and the merged runs-board.tsx (the filmstrip supersedes it); repo-wide grep confirms zero remaining imports of run-view or console-panel and tsc --noEmit plus the full vitest suite are green when this task finalizes.
   _Requirements: 1.1, 1.2, 1.3, 1.4, 10.2_
   _Boundary: src/app, src/components/run-view, src/components/console-panel_
   _Depends: 10.1_
-- [ ]* 11.2 Create src/app/console/[[...runId]]/page.test.tsx with tests tagged [req:11.9]: a params Promise with a segment renders ConsoleDeck with that runId; no segment renders ConsoleDeck with runId null; plus assertions in the rewritten src/app/page.test.tsx that / redirects to /console and in src/app/run/[runId]/page.test.tsx that /run/x redirects to /console/x via mocked next/navigation.
+- [x]* 11.2 Create src/app/console/[[...runId]]/page.test.tsx with tests tagged [req:11.9]: a params Promise with a segment renders ConsoleDeck with that runId; no segment renders ConsoleDeck with runId null; plus assertions in the rewritten src/app/page.test.tsx that / redirects to /console and in src/app/run/[runId]/page.test.tsx that /run/x redirects to /console/x via mocked next/navigation.
   _Requirements: 11.9_
   _Boundary: src/app_
   _Depends: 11.1_
