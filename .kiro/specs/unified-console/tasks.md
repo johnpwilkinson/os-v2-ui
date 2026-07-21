@@ -40,7 +40,7 @@
   _Requirements: 4.1, 4.3_
   _Boundary: src/components/console-deck/bus-filter_
   _Depends: 3.1_
-- [ ]* 5.2 Create src/components/console-deck/bus-filter.test.tsx with tests tagged [req:11.4]: each bucket button shows its count from the counts prop; clicking a bucket button calls onToggle with that bucket key; clicking ALL calls onAll; an off bucket carries the dim treatment class.
+- [x]* 5.2 Create src/components/console-deck/bus-filter.test.tsx with tests tagged [req:11.4]: each bucket button shows its count from the counts prop; clicking a bucket button calls onToggle with that bucket key; clicking ALL calls onAll; an off bucket carries the dim treatment class.
   _Requirements: 11.4_
   _Boundary: src/components/console-deck/bus-filter_
   _Depends: 5.1_
