@@ -36,7 +36,7 @@
   _Depends: 4.1_
 
 - [ ] 5. Bus filter
-- [ ] 5.1 (P) Create src/components/console-deck/bus-filter.tsx: pure presentational BusFilter({ enabled, counts, onToggle, onAll }) with no trpc import, rendering four toggle buttons LIVE, HALTED, PASSED (each showing its counts value and an on/off treatment — emerald border/glow for enabled live/passed, #E61919 treatment for enabled halted, plain dim border when off) and ALL which calls onAll; each status button calls onToggle with its bucket key; buttons carry type="button" and the bucket name plus count as accessible text.
+- [x] 5.1 (P) Create src/components/console-deck/bus-filter.tsx: pure presentational BusFilter({ enabled, counts, onToggle, onAll }) with no trpc import, rendering four toggle buttons LIVE, HALTED, PASSED (each showing its counts value and an on/off treatment — emerald border/glow for enabled live/passed, #E61919 treatment for enabled halted, plain dim border when off) and ALL which calls onAll; each status button calls onToggle with its bucket key; buttons carry type="button" and the bucket name plus count as accessible text.
   _Requirements: 4.1, 4.3_
   _Boundary: src/components/console-deck/bus-filter_
   _Depends: 3.1_
