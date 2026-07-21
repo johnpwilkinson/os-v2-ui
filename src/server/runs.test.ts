@@ -81,6 +81,83 @@ describe("listRuns", () => {
       expect.objectContaining({ runId: "run-with-mtime", mtimeMs: stats.mtimeMs }),
     ]);
   });
+
+  test("includes normalized gate, haltKind, outputTokens, and llmHops when runner-summary.json exists [req:2.1]", async () => {
+    const runDir = await makeRunDir("run-with-summary");
+    await fs.writeFile(
+      path.join(runDir, "runner-summary.json"),
+      JSON.stringify({
+        gate: "gate-a",
+        halt_kind: "budget",
+        live_output_tokens: 42,
+        dispatch_counts: { execCount: 1, llmHops: 7, turboRuns: 0 },
+      }),
+    );
+
+    const runs = await listRuns();
+
+    expect(runs).toEqual([
+      expect.objectContaining({
+        runId: "run-with-summary",
+        finished: true,
+        gate: "gate-a",
+        haltKind: "budget",
+        outputTokens: 42,
+        llmHops: 7,
+      }),
+    ]);
+  });
+
+  test("marks an entry with no runner-summary.json as unfinished, status live, with no summary fields [req:2.2]", async () => {
+    await makeRunDir("run-no-summary");
+
+    const runs = await listRuns();
+
+    expect(runs).toEqual([
+      expect.objectContaining({ runId: "run-no-summary", finished: false, status: "live" }),
+    ]);
+    expect(runs[0].gate).toBeUndefined();
+    expect(runs[0].haltKind).toBeUndefined();
+    expect(runs[0].outputTokens).toBeUndefined();
+    expect(runs[0].llmHops).toBeUndefined();
+  });
+
+  test("keeps finished true with summary fields undefined for an unreadable/malformed runner-summary.json instead of throwing [req:2.3]", async () => {
+    const runDir = await makeRunDir("run-malformed");
+    await fs.writeFile(path.join(runDir, "runner-summary.json"), "{not valid json");
+
+    const runs = await listRuns();
+
+    expect(runs).toEqual([
+      expect.objectContaining({ runId: "run-malformed", finished: true, status: "passed" }),
+    ]);
+    expect(runs[0].gate).toBeUndefined();
+    expect(runs[0].haltKind).toBeUndefined();
+    expect(runs[0].outputTokens).toBeUndefined();
+    expect(runs[0].llmHops).toBeUndefined();
+  });
+
+  test("derives status halted for finished entries with a non-null haltKind and passed otherwise [req:2.4]", async () => {
+    const haltedDir = await makeRunDir("run-halted");
+    await fs.writeFile(
+      path.join(haltedDir, "runner-summary.json"),
+      JSON.stringify({ halt_kind: "gate-fail" }),
+    );
+    const passedDir = await makeRunDir("run-passed");
+    await fs.writeFile(
+      path.join(passedDir, "runner-summary.json"),
+      JSON.stringify({ halt_kind: null }),
+    );
+
+    const runs = await listRuns();
+
+    expect(runs).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ runId: "run-halted", finished: true, status: "halted" }),
+        expect.objectContaining({ runId: "run-passed", finished: true, status: "passed" }),
+      ]),
+    );
+  });
 });
 
 describe("readRunSnapshot", () => {
