@@ -94,7 +94,7 @@
   _Requirements: 1.1, 1.5, 1.6, 9.1, 9.2, 9.3, 9.4, 10.1_
   _Boundary: src/components/console-deck_
   _Depends: 2.1, 4.1, 5.1, 6.2, 9.1_
-- [ ]* 10.2 Create src/components/console-deck/console-deck.test.tsx with tests tagged [req:11.10] driving mocked trpc: pressing j then Enter pushes /console/<second-run>; k moves the highlight back; pressing 2 dims halted tiles (opacity class present, tile still in document); pressing 4 re-enables all buckets; keydown originating from an input element changes nothing; zero runs renders the CHAMBER_ARTIFACTS_DIR empty state.
+- [x]* 10.2 Create src/components/console-deck/console-deck.test.tsx with tests tagged [req:11.10] driving mocked trpc: pressing j then Enter pushes /console/<second-run>; k moves the highlight back; pressing 2 dims halted tiles (opacity class present, tile still in document); pressing 4 re-enables all buckets; keydown originating from an input element changes nothing; zero runs renders the CHAMBER_ARTIFACTS_DIR empty state.
   _Requirements: 11.10_
   _Boundary: src/components/console-deck_
   _Depends: 10.1_
