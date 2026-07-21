@@ -60,7 +60,7 @@
   _Depends: 6.2_
 
 - [ ] 7. Stage panel
-- [ ] 7.1 (P) Create src/components/console-deck/stage-panel.tsx: pure presentational StagePanel({ stages, totalMs, live }) with no trpc import — header row with [ STAGES ] micro label left and the total run clock right rendered as formatClock(totalMs) in emerald glow with tabular-nums (the parent ticks totalMs while live and freezes it when finished); one row per StageNode in groupStages order showing a status dot (running pulse emerald, done dim, failed #E61919), the stage title, a leg-count micro label, and a right-aligned tabular-nums duration from stageClocks(stages, totalMs) — static dim text for non-ticking stages and emerald glow for the ticking stage; failed legs surface their error text in #E61919 under the row like the deleted stage-tree.
+- [x] 7.1 (P) Create src/components/console-deck/stage-panel.tsx: pure presentational StagePanel({ stages, totalMs, live }) with no trpc import — header row with [ STAGES ] micro label left and the total run clock right rendered as formatClock(totalMs) in emerald glow with tabular-nums (the parent ticks totalMs while live and freezes it when finished); one row per StageNode in groupStages order showing a status dot (running pulse emerald, done dim, failed #E61919), the stage title, a leg-count micro label, and a right-aligned tabular-nums duration from stageClocks(stages, totalMs) — static dim text for non-ticking stages and emerald glow for the ticking stage; failed legs surface their error text in #E61919 under the row like the deleted stage-tree.
   _Requirements: 7.2, 7.3, 7.4, 7.5_
   _Boundary: src/components/console-deck/stage-panel_
   _Depends: 1.1, 3.1_
