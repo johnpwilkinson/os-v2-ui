@@ -108,3 +108,6 @@
   _Requirements: 11.9_
   _Boundary: src/app_
   _Depends: 11.1_
+
+## Implementation Notes
+- mechanical verify RED: { ok :false, detail : finalize-task: unsafe file path \ src/app/console/[[...runId]]/page.tsx (new)\  (must be repo-relative, no '..') , data :{}}
