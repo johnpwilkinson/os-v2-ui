@@ -54,7 +54,7 @@
   _Requirements: 4.2, 4.4, 5.1, 5.5_
   _Boundary: src/components/console-deck/filmstrip_
   _Depends: 6.1_
-- [ ]* 6.3 Create src/components/console-deck/run-tile.test.tsx and src/components/console-deck/filmstrip.test.tsx with tests tagged [req:11.5] using vi.useFakeTimers where clocks tick: live tile clock string changes when nowMs advances and finished tile clock is frozen at mtime minus start; a non-timestamp runId renders no clock element; halted and passed treatments apply their classes; alias and phase render when consoleRun is passed; selected treatment applies; a disabled bucket's tile carries opacity-35 yet remains in the document and clicking it still calls onTake.
+- [x]* 6.3 Create src/components/console-deck/run-tile.test.tsx and src/components/console-deck/filmstrip.test.tsx with tests tagged [req:11.5] using vi.useFakeTimers where clocks tick: live tile clock string changes when nowMs advances and finished tile clock is frozen at mtime minus start; a non-timestamp runId renders no clock element; halted and passed treatments apply their classes; alias and phase render when consoleRun is passed; selected treatment applies; a disabled bucket's tile carries opacity-35 yet remains in the document and clicking it still calls onTake.
   _Requirements: 11.5_
   _Boundary: src/components/console-deck/run-tile, src/components/console-deck/filmstrip_
   _Depends: 6.2_
