@@ -12,7 +12,7 @@ function leg(
 }
 
 describe("StagePanel", () => {
-  it("renders the total run clock in the header as formatClock(totalMs) and updates it across rerenders while live [req:7.2]", () => {
+  it("renders the total run clock in the header as formatClock(totalMs) and updates it across rerenders while live [req:7.2] [req:11.6]", () => {
     const stages: StageNode[] = [
       { key: "impl", title: "Implement", legs: [leg("running")] },
     ];
@@ -24,7 +24,7 @@ describe("StagePanel", () => {
     expect(screen.getByTestId("stage-panel-total-clock")).toHaveTextContent("0:06");
   });
 
-  it("renders the header clock frozen at the given totalMs when the run is finished [req:7.3]", () => {
+  it("renders the header clock frozen at the given totalMs when the run is finished [req:7.3] [req:11.6]", () => {
     const stages: StageNode[] = [
       { key: "impl", title: "Implement", legs: [leg("done", { ms: 1000 })] },
     ];
@@ -33,7 +33,7 @@ describe("StagePanel", () => {
     expect(screen.getByTestId("stage-panel-total-clock")).toHaveTextContent("0:02");
   });
 
-  it("shows a completed stage's duration as the sum of its done/failed legs' ms values, statically [req:7.4]", () => {
+  it("shows a completed stage's duration as the sum of its done/failed legs' ms values, statically [req:7.4] [req:11.6]", () => {
     const stages: StageNode[] = [
       {
         key: "impl",
@@ -48,7 +48,7 @@ describe("StagePanel", () => {
     expect(stageClock).not.toHaveClass("text-emerald-400");
   });
 
-  it("ticks the stage owning the most recently opened running leg as its elapsed grows with totalMs [req:7.5]", () => {
+  it("ticks the stage owning the most recently opened running leg as its elapsed grows with totalMs [req:7.5] [req:11.6]", () => {
     const stages: StageNode[] = [
       { key: "impl", title: "Implement", legs: [leg("done", { label: "a", ms: 1000 })] },
       {

@@ -64,7 +64,7 @@
   _Requirements: 7.2, 7.3, 7.4, 7.5_
   _Boundary: src/components/console-deck/stage-panel_
   _Depends: 1.1, 3.1_
-- [ ]* 7.2 Create src/components/console-deck/stage-panel.test.tsx with tests tagged [req:11.6] via rerenders with advanced totalMs: header clock renders formatClock(totalMs) and changes across rerenders while live; completed stages show their static leg-ms sums; the stage owning the most recent running leg shows the ticking emerald treatment and its value grows with totalMs.
+- [x]* 7.2 Create src/components/console-deck/stage-panel.test.tsx with tests tagged [req:11.6] via rerenders with advanced totalMs: header clock renders formatClock(totalMs) and changes across rerenders while live; completed stages show their static leg-ms sums; the stage owning the most recent running leg shows the ticking emerald treatment and its value grows with totalMs.
   _Requirements: 11.6_
   _Boundary: src/components/console-deck/stage-panel_
   _Depends: 7.1_
