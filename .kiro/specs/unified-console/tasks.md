@@ -101,6 +101,7 @@
 
 - [ ] 11. Routes and consolidation
 - [ ] 11.1 In ONE change so the repo compiles at task end: create src/app/console/[[...runId]]/page.tsx (dynamic force-dynamic, awaits params, renders <ConsoleDeck runId={runId?.[0] ?? null} />) and delete src/app/console/page.tsx plus src/app/console/page.test.tsx; rewrite src/app/page.tsx to redirect("/console") and src/app/run/[runId]/page.tsx to await params then redirect("/console/" + runId) using next/navigation, updating src/app/page.test.tsx and src/app/run/[runId]/page.test.tsx to assert the redirects; delete the src/components/run-view and src/components/console-panel directories entirely including their tests and the merged runs-board.tsx (the filmstrip supersedes it); repo-wide grep confirms zero remaining imports of run-view or console-panel and tsc --noEmit plus the full vitest suite are green when this task finalizes.
+  _Blocked: verify-completion: NOT_VERIFIED_
   _Requirements: 1.1, 1.2, 1.3, 1.4, 10.2_
   _Boundary: src/app, src/components/run-view, src/components/console-panel_
   _Depends: 10.1_
