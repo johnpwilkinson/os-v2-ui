@@ -1,4 +1,4 @@
-import { RunView } from "@/components/run-view/run-view";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -9,5 +9,5 @@ export default async function RunPage({
 }) {
   const { runId } = await params;
 
-  return <RunView runId={runId} />;
+  redirect("/console/" + runId);
 }

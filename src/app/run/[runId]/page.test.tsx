@@ -1,23 +1,23 @@
-import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-const { runViewSpy } = vi.hoisted(() => ({ runViewSpy: vi.fn() }));
+const { redirectSpy } = vi.hoisted(() => ({
+  redirectSpy: vi.fn(),
+}));
 
-vi.mock("@/components/run-view/run-view", () => ({
-  RunView: (props: { runId: string }) => {
-    runViewSpy(props);
-    return <div>run-view:{props.runId}</div>;
-  },
+vi.mock("next/navigation", () => ({
+  redirect: (path: string) => redirectSpy(path),
 }));
 
 import RunPage from "./page";
 
-describe("RunPage", () => {
-  it("awaits the params Promise and renders RunView for that runId [req:1.5]", async () => {
-    const element = await RunPage({ params: Promise.resolve({ runId: "run-123" }) });
-    render(element);
+afterEach(() => {
+  vi.clearAllMocks();
+});
 
-    expect(runViewSpy).toHaveBeenCalledWith({ runId: "run-123" });
-    expect(screen.getByText("run-view:run-123")).toBeInTheDocument();
+describe("RunPage", () => {
+  it("awaits the params Promise and redirects to /console/<runId> [req:1.3]", async () => {
+    await RunPage({ params: Promise.resolve({ runId: "run-123" }) });
+
+    expect(redirectSpy).toHaveBeenCalledWith("/console/run-123");
   });
 });
