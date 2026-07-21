@@ -21,7 +21,7 @@
   _Depends: 2.1_
 
 - [ ] 3. CRT constants
-- [ ] 3.1 Create src/components/console-deck/crt.ts exporting the shared CRT class-string constants carried verbatim from console-panel.tsx: MICRO_LABEL = "text-[11px] uppercase tracking-[0.08em] text-[#EAEAEA]/60"; PRIMARY_TEXT = "text-sm [text-shadow:0_0_6px_rgba(234,234,234,0.22)]"; SCANLINES = "pointer-events-none fixed inset-0 z-50 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.18)_2px,rgba(0,0,0,0.18)_4px)]"; FRAME = "min-h-[100dvh] bg-[#0A0A0A] text-[#EAEAEA] font-mono"; plus STATUS text/led class maps for live (emerald-400 with pulse), halted (#E61919 with blink via animate-pulse), passed (text-[#EAEAEA]/40), and stalled/amber (text-amber-400); constants only — no components, no JSX, no trpc import.
+- [x] 3.1 Create src/components/console-deck/crt.ts exporting the shared CRT class-string constants carried verbatim from console-panel.tsx: MICRO_LABEL = "text-[11px] uppercase tracking-[0.08em] text-[#EAEAEA]/60"; PRIMARY_TEXT = "text-sm [text-shadow:0_0_6px_rgba(234,234,234,0.22)]"; SCANLINES = "pointer-events-none fixed inset-0 z-50 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.18)_2px,rgba(0,0,0,0.18)_4px)]"; FRAME = "min-h-[100dvh] bg-[#0A0A0A] text-[#EAEAEA] font-mono"; plus STATUS text/led class maps for live (emerald-400 with pulse), halted (#E61919 with blink via animate-pulse), passed (text-[#EAEAEA]/40), and stalled/amber (text-amber-400); constants only — no components, no JSX, no trpc import.
   _Requirements: 10.1_
   _Boundary: src/components/console-deck/crt.ts_
 
