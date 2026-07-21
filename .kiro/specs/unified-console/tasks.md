@@ -50,7 +50,7 @@
   _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
   _Boundary: src/components/console-deck/run-tile_
   _Depends: 1.1, 2.1, 3.1_
-- [ ] 6.2 (P) Create src/components/console-deck/filmstrip.tsx: pure presentational Filmstrip({ entries, runsByRunId, enabled, selectedRunId, highlightedRunId, nowMs, onTake }) with no trpc import, rendering one RunTile per entry in the given newest-first order inside a horizontal flex row, passing dimmed when the entry's status bucket is not in the enabled set (never filtering entries out of the array), selected when entry.runId equals selectedRunId, highlighted when it equals highlightedRunId, and the matching consoleRun lookup from runsByRunId.
+- [x] 6.2 (P) Create src/components/console-deck/filmstrip.tsx: pure presentational Filmstrip({ entries, runsByRunId, enabled, selectedRunId, highlightedRunId, nowMs, onTake }) with no trpc import, rendering one RunTile per entry in the given newest-first order inside a horizontal flex row, passing dimmed when the entry's status bucket is not in the enabled set (never filtering entries out of the array), selected when entry.runId equals selectedRunId, highlighted when it equals highlightedRunId, and the matching consoleRun lookup from runsByRunId.
   _Requirements: 4.2, 4.4, 5.1, 5.5_
   _Boundary: src/components/console-deck/filmstrip_
   _Depends: 6.1_
