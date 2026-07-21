@@ -74,7 +74,7 @@
   _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
   _Boundary: src/components/console-deck/journal-pane_
   _Depends: 3.1_
-- [ ]* 8.2 Create src/components/console-deck/journal-pane.test.tsx with tests tagged [req:11.7] using the scroll-container mocking style of the deleted journal-feed.test.tsx: renders pinned by default with the line count; simulated scroll away from the bottom unpins and shows the reviewing-history indicator; appending lines while unpinned increments the pill count and does not scroll; clicking the pill repins, clears the count, and the pinned indicator returns; scrolling back to the bottom also repins.
+- [x]* 8.2 Create src/components/console-deck/journal-pane.test.tsx with tests tagged [req:11.7] using the scroll-container mocking style of the deleted journal-feed.test.tsx: renders pinned by default with the line count; simulated scroll away from the bottom unpins and shows the reviewing-history indicator; appending lines while unpinned increments the pill count and does not scroll; clicking the pill repins, clears the count, and the pinned indicator returns; scrolling back to the bottom also repins.
   _Requirements: 11.7_
   _Boundary: src/components/console-deck/journal-pane_
   _Depends: 8.1_

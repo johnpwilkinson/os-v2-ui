@@ -37,7 +37,7 @@ afterEach(() => {
 });
 
 describe("JournalPane", () => {
-  it("renders the full journal history pinned to the tail by default [req:8.1]", () => {
+  it("renders the full journal history pinned to the tail by default [req:8.1] [req:11.7]", () => {
     const lines = [line("first"), line("second"), line("third")];
 
     render(<JournalPane lines={lines} />);
@@ -50,7 +50,7 @@ describe("JournalPane", () => {
     );
   });
 
-  it("auto-scrolls to each appended line while pinned and shows the total line count [req:8.2]", () => {
+  it("auto-scrolls to each appended line while pinned and shows the total line count [req:8.2] [req:11.7]", () => {
     const { rerender } = render(<JournalPane lines={[line("a"), line("b")]} />);
     const callsAfterMount = scrollToSpy.mock.calls.length;
     expect(callsAfterMount).toBeGreaterThan(0);
@@ -63,7 +63,7 @@ describe("JournalPane", () => {
     );
   });
 
-  it("unpins and shows the reviewing-history indicator when the user scrolls up past the stick threshold [req:8.3]", () => {
+  it("unpins and shows the reviewing-history indicator when the user scrolls up past the stick threshold [req:8.3] [req:11.7]", () => {
     render(<JournalPane lines={[line("a"), line("b"), line("c")]} />);
     const scrollEl = screen.getByTestId("journal-pane-scroll");
 
@@ -75,7 +75,7 @@ describe("JournalPane", () => {
     );
   });
 
-  it("accumulates arriving lines into a new-lines pill instead of scrolling while unpinned [req:8.4]", () => {
+  it("accumulates arriving lines into a new-lines pill instead of scrolling while unpinned [req:8.4] [req:11.7]", () => {
     const { rerender } = render(<JournalPane lines={[line("a"), line("b"), line("c")]} />);
     const scrollEl = screen.getByTestId("journal-pane-scroll");
     setScrollMetrics(scrollEl, { scrollTop: 0, scrollHeight: 1000, clientHeight: 400 });
@@ -94,7 +94,7 @@ describe("JournalPane", () => {
     expect(screen.getByTestId("journal-pane-new-lines-pill")).toHaveTextContent("▼ 2 NEW LINES");
   });
 
-  it("repins, clears the pill, and jumps to the tail when the pill is clicked [req:8.5]", () => {
+  it("repins, clears the pill, and jumps to the tail when the pill is clicked [req:8.5] [req:11.7]", () => {
     const { rerender } = render(<JournalPane lines={[line("a"), line("b"), line("c")]} />);
     const scrollEl = screen.getByTestId("journal-pane-scroll");
     setScrollMetrics(scrollEl, { scrollTop: 0, scrollHeight: 1000, clientHeight: 400 });
@@ -111,7 +111,7 @@ describe("JournalPane", () => {
     expect(scrollToSpy.mock.calls.length).toBeGreaterThan(callsBeforeClick);
   });
 
-  it("repins, clears the pill, and jumps to the tail when scrolled back within the stick threshold [req:8.5]", () => {
+  it("repins, clears the pill, and jumps to the tail when scrolled back within the stick threshold [req:8.5] [req:11.7]", () => {
     const { rerender } = render(<JournalPane lines={[line("a"), line("b"), line("c")]} />);
     const scrollEl = screen.getByTestId("journal-pane-scroll");
     setScrollMetrics(scrollEl, { scrollTop: 0, scrollHeight: 1000, clientHeight: 400 });
