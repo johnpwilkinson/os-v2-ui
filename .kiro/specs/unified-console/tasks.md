@@ -84,7 +84,7 @@
   _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9_
   _Boundary: src/components/console-deck/program-monitor_
   _Depends: 7.1, 8.1_
-- [ ]* 9.2 Create src/components/console-deck/program-monitor.test.tsx with tests tagged [req:11.8] driving mocked trpc the way the deleted run-view.test.tsx did: a finished MERGED summary renders the emerald treatment with the feature name; a haltKind summary renders HALTED with the detail; an unfinished fresh-mtime snapshot renders the pulsing LIVE treatment and derived meter values with EXEC as an em dash; an unfinished stale-mtime snapshot renders STALLED; a not-ok snapshot renders the no-run-found state; a finished summary renders meter values from the summary.
+- [x]* 9.2 Create src/components/console-deck/program-monitor.test.tsx with tests tagged [req:11.8] driving mocked trpc the way the deleted run-view.test.tsx did: a finished MERGED summary renders the emerald treatment with the feature name; a haltKind summary renders HALTED with the detail; an unfinished fresh-mtime snapshot renders the pulsing LIVE treatment and derived meter values with EXEC as an em dash; an unfinished stale-mtime snapshot renders STALLED; a not-ok snapshot renders the no-run-found state; a finished summary renders meter values from the summary.
   _Requirements: 11.8_
   _Boundary: src/components/console-deck/program-monitor_
   _Depends: 9.1_
