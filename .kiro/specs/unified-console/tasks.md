@@ -30,7 +30,7 @@
   _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
   _Boundary: src/components/console-deck/ambient-strip_
   _Depends: 3.1_
-- [ ]* 4.2 Create src/components/console-deck/ambient-strip.test.tsx with tests tagged [req:11.3]: optimalNext text renders; a pending decision renders kind, title, and a countdown that changes when nowMs advances by 1000; empty decisions renders NO PENDING DECISIONS; the fleet cell renders watched/driver counts and queue depth from a fixture state; a non-null error renders the LINK DOWN banner containing the error text.
+- [x]* 4.2 Create src/components/console-deck/ambient-strip.test.tsx with tests tagged [req:11.3]: optimalNext text renders; a pending decision renders kind, title, and a countdown that changes when nowMs advances by 1000; empty decisions renders NO PENDING DECISIONS; the fleet cell renders watched/driver counts and queue depth from a fixture state; a non-null error renders the LINK DOWN banner containing the error text.
   _Requirements: 11.3_
   _Boundary: src/components/console-deck/ambient-strip_
   _Depends: 4.1_
