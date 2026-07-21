@@ -9,6 +9,11 @@ export interface RunListEntry {
   runId: string;
   finished: boolean;
   mtimeMs: number;
+  status: "live" | "halted" | "passed";
+  gate?: string;
+  haltKind?: string | null;
+  outputTokens?: number;
+  llmHops?: number;
 }
 
 export interface EngineState {
@@ -73,11 +78,32 @@ export async function listRuns(): Promise<RunListEntry[]> {
     .sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
 
   return Promise.all(
-    runIds.map(async (runId) => ({
-      runId,
-      finished: await fileExists(path.join(root, runId, "runner-summary.json")),
-      mtimeMs: await mtimeMsOf(path.join(root, runId)),
-    })),
+    runIds.map(async (runId) => {
+      const runDir = path.join(root, runId);
+      const finished = await fileExists(path.join(runDir, "runner-summary.json"));
+      const mtimeMs = await mtimeMsOf(runDir);
+
+      if (!finished) {
+        return { runId, finished, mtimeMs, status: "live" as const };
+      }
+
+      try {
+        const raw = await fs.readFile(path.join(runDir, "runner-summary.json"), "utf8");
+        const summary = normalizeSummary(JSON.parse(raw));
+        return {
+          runId,
+          finished,
+          mtimeMs,
+          status: summary.halt_kind != null ? ("halted" as const) : ("passed" as const),
+          gate: summary.gate,
+          haltKind: summary.halt_kind,
+          outputTokens: summary.live_output_tokens,
+          llmHops: summary.llmHops,
+        };
+      } catch {
+        return { runId, finished, mtimeMs, status: "passed" as const };
+      }
+    }),
   );
 }
 
